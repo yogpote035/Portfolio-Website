@@ -527,9 +527,27 @@ span {
 }
 
 @media (max-width:617px) {
-    .portfolio-content {
+   .portfolio-content {
         grid-template-columns: repeat(2, 1fr);
     }
+
+    .portfolio-box:hover .portfolio-layer {
+        transform: translateY(-90%);
+
+    }
+
+    .about-img img {
+        width: 30vh;
+        border-radius: 18rem;
+        margin-left: 4rem;
+    }
+
+
+    .home-content p {
+        width: 40rem;
+    }
+
+
 }
 
 @media (max-width:450px) {

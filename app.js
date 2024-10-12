@@ -47,7 +47,7 @@ ScrollReveal({
 ScrollReveal().reveal('.home-content, .heading', { origin: 'top' });
 ScrollReveal().reveal('.home-img, .service-container, .portfolio-box, .contact form', { origin: 'bottom' });
 ScrollReveal().reveal('.home-content h1, .about-img', { origin: 'left' });
-ScrollReveal().reveal('.home-content p, .about-content', { origin: 'right' });
+ScrollReveal().reveal('.home-content p',  { origin: 'right' });
 
 // Typed js
 
@@ -58,3 +58,21 @@ const typed = new Typed('.multiple-text', {
     backDelay: 1000,
     loop: true
 });
+
+
+// Read more box try
+
+let readButton = document.querySelector('.read-more');
+let content = document.querySelector('.extra-content');
+
+let toggleRead = function () {
+    if (content.style.display == 'none' || content.style.display === '') {
+        content.style.display = 'block';
+        readButton.textContent = 'Read Less';
+    }
+    else {
+        content.style.display = 'none';
+        readButton.textContent = 'Read More';
+    }
+}
+readButton.addEventListener('click', toggleRead);

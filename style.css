@@ -70,7 +70,8 @@ body {
     width: 1rem;
     background: transparent;
     margin-left: 2rem;
-    font-size: 2.2rem;}
+    font-size: 2.2rem;
+}
 
 .navbar .darkMode :hover {
     color: var(--main-color);
@@ -78,11 +79,13 @@ body {
     background: var(--bg-color);
     border-radius: 50%;
 }
-.darkMode i{
+
+.darkMode i {
     transition: 1s ease;
 }
-.darkMode i:hover{
-    transform:  rotate(360deg);
+
+.darkMode i:hover {
+    transform: rotate(360deg);
 }
 
 .navbar .darkMode :active {

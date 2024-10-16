@@ -16,7 +16,7 @@
     --second-bg-color: #52688f;
     --text-color: #fff;
     --main-color: #fae9e2;
-
+    --extra-color: #afc1d0;
 }
 
 html {
@@ -64,11 +64,47 @@ body {
 
 }
 
+.navbar .darkMode {
+    color: var(--text-color);
+    height: 1rem;
+    width: 1rem;
+    background: transparent;
+    margin-left: 2rem;
+    font-size: 2.2rem;}
+
+.navbar .darkMode :hover {
+    color: var(--main-color);
+    box-shadow: 0 0 1rem var(--second-bg-color);
+    background: var(--bg-color);
+    border-radius: 50%;
+}
+.darkMode i{
+    transition: 1s ease;
+}
+.darkMode i:hover{
+    transform:  rotate(360deg);
+}
+
+.navbar .darkMode :active {
+    color: var(--second-bg-color);
+}
+
 .navbar a:hover,
 .navbar a.active {
     color: var(--main-color);
 
 }
+
+
+/* Dark mode */
+:root .dark-mode {
+    --bg-color: #0e050f;
+    --second-bg-color: #53565a;
+    --text-color: #fff;
+    --main-color: #f4d800;
+    --extra-color: #afc1d0;
+}
+
 
 #menu-icon {
     font-size: 3.6rem;
@@ -380,7 +416,7 @@ li {
     padding: 1.5rem;
     font-size: 1.6rem;
     color: var(--text-color);
-    background: var(--second-bg-color);
+    background: var(--extra-color);
     border-radius: .8rem;
     margin: .7rem 0;
 }

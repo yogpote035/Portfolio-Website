@@ -47,7 +47,7 @@ ScrollReveal({
 ScrollReveal().reveal('.home-content, .heading', { origin: 'top' });
 ScrollReveal().reveal('.home-img, .service-container, .portfolio-box, .contact form', { origin: 'bottom' });
 ScrollReveal().reveal('.home-content h1, .about-img', { origin: 'left' });
-ScrollReveal().reveal('.home-content p',  { origin: 'right' });
+ScrollReveal().reveal('.home-content p', { origin: 'right' });
 
 // Typed js
 
@@ -76,3 +76,22 @@ let toggleRead = function () {
     }
 }
 readButton.addEventListener('click', toggleRead);
+
+let sun = document.querySelector('.darkMode i');
+let button = document.querySelector('.darkMode');
+let body = document.querySelector('body');
+
+let modeChanger = function () {
+    if (sun.classList.contains('bx-sun')) {
+        sun.classList.remove('bx-sun');
+        sun.classList.add('bxs-moon');
+        body.classList.add('dark-mode');
+    }
+    else {
+        sun.classList.remove('bxs-moon');
+        body.classList.remove('dark-mode');
+        sun.classList.add('bx-sun');
+    }
+}
+
+button.addEventListener('click', modeChanger);

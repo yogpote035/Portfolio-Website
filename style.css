@@ -84,9 +84,7 @@ body {
     transition: 1s ease;
 }
 
-.darkMode i:hover {
-    transform: rotate(100deg);
-}
+
 
 .navbar .darkMode :active {
     color: var(--second-bg-color);

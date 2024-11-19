@@ -85,7 +85,7 @@ body {
 }
 
 .darkMode i:hover {
-    transform: rotate(360deg);
+    transform: rotate(100deg);
 }
 
 .navbar .darkMode :active {
@@ -439,6 +439,14 @@ li {
     cursor: pointer;
 
 }
+
+/* disable number up down incrementor or decrement */
+input[type="number"].removeUpDownNumberInput::-webkit-outer-spin-button,
+input[type="number"].removeUpDownNumberInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 
 /* Footer Section */
 .footer {

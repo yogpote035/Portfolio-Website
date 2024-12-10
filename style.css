@@ -220,7 +220,7 @@ span {
 .about-img img {
     width: 80vh;
     border-radius: 18rem;
-    margin-left: -6rem;
+    margin-left: -8rem;
 }
 
 .heading {
@@ -239,7 +239,7 @@ span {
 
 .about-content p {
     font-size: 1.6rem;
-    margin: 0;
+    margin-left: 2rem;
 
 }
 
@@ -395,6 +395,13 @@ li {
 }
 
 /* contact Section  */
+.contact {
+    margin-top: 5rem;
+    display: flex;
+    justify-content: center;
+    /* align-items: center; */
+}
+
 .contact h2 {
     margin-bottom: 3rem;
 }
@@ -598,7 +605,8 @@ input[type="number"].removeUpDownNumberInput::-webkit-inner-spin-button {
     .about-img img {
         width: 42vh;
         border-radius: 18rem;
-        margin-left: .1px;
+        margin-left: auto;
+
     }
 
 
@@ -643,4 +651,3 @@ body {
     margin: 0;
     overflow-x: auto;
 }
-

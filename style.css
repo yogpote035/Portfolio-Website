@@ -249,10 +249,11 @@ span {
 li {
     font-size: 1.6rem;
     margin: .5rem 0 1rem;
+    margin-left: 3rem;
 }
 
 .extra-content {
-    margin-left: 2rem;
+
     display: none;
 }
 

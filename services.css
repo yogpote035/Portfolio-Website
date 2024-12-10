@@ -13,13 +13,12 @@
 
 
 :root {
-    --bg-color: #2084a8;
+    --bg-color: #68BBE3;
     --second-bg-color: #7ec8e3;
     --text-color: #000000;
     --main-color: #001242;
     --extra-color: #d3d2cf;
 }
-
 html {
     font-size: 62.5%;
     overflow-x: auto;

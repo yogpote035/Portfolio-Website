@@ -12,14 +12,12 @@
 }
 
 :root {
-    --bg-color: #001f3d;
-    --second-bg-color: #52688f;
-    --text-color: #fff;
-    --main-color: #fae9e2;
-    --extra-color: #afc1d0;
+    --bg-color: #005e7c;
+    --second-bg-color: #427aa1;
+    --text-color: #000000;
+    --main-color: #001242;
+    --extra-color: #ede7d9;
 }
-
-
 
 
 html {
@@ -105,11 +103,11 @@ footer p {
 }
 
 :root .dark-mode {
-    --bg-color: #0e050f;
-    --second-bg-color: #53565a;
-    --text-color: #fff;
-    --main-color: #f4d800;
-    --extra-color: #afc1d0;
+    --bg-color: #000000;
+    --second-bg-color: #14213d;
+    --text-color: #e5e5e5;
+    --main-color: #fca311;
+    --extra-color: #9388a2;
 }
 
 .darkMode :active {
@@ -142,7 +140,7 @@ footer p {
 
 .header button i {
     font-size: 3rem;
-    margin-left: 24rem;
+    margin-left: 15rem;
 }
 
 
@@ -155,4 +153,8 @@ align-items: center;
 
 .serBtn{
     margin-left: 1rem;
+}
+
+body{
+    padding: 1rem;
 }

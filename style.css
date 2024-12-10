@@ -120,7 +120,7 @@ section {
 }
 
 .home-img img {
-    width: 60vh;
+    width: 80vh;
     animation: floatImage 4s ease-in-out infinite;
     border-radius: 5%;
 }
@@ -200,6 +200,7 @@ span {
     font-weight: 600;
     transition: .5s ease;
     box-shadow: none;
+    margin-top: 5rem;
 }
 
 .btn:hover {
@@ -212,7 +213,7 @@ span {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 2rem;
+    /* gap: 2rem; */
     background: var(--second-bg-color);
 }
 
@@ -238,7 +239,7 @@ span {
 
 .about-content p {
     font-size: 1.6rem;
-    margin: 2rem 0 3rem;
+    margin: 0;
 
 }
 
@@ -400,7 +401,7 @@ li {
 
 .contact form {
     max-width: 70rem;
-    margin: 1rem auto;
+    margin: 1rem 0;
     text-align: center;
     margin-bottom: 3rem;
 }
@@ -441,8 +442,8 @@ li {
 /* disable number up down incrementor or decrement */
 input[type="number"].removeUpDownNumberInput::-webkit-outer-spin-button,
 input[type="number"].removeUpDownNumberInput::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 
@@ -558,7 +559,7 @@ input[type="number"].removeUpDownNumberInput::-webkit-inner-spin-button {
     }
 
     .home-img img {
-        width: 90vh;
+        width: 35vh;
         margin-top: 4rem;
     }
 
@@ -567,7 +568,7 @@ input[type="number"].removeUpDownNumberInput::-webkit-inner-spin-button {
     }
 
     .about img {
-        width: 90vh;
+        width: 35vh;
         margin-top: 4rem;
     }
 
@@ -586,18 +587,18 @@ input[type="number"].removeUpDownNumberInput::-webkit-inner-spin-button {
 
 @media (max-width:617px) {
     .portfolio-content {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(1, 1fr);
     }
 
     .portfolio-box:hover .portfolio-layer {
-        transform: translateY(-90%);
+        transform: translateY(0);
 
     }
 
     .about-img img {
-        width: 30vh;
+        width: 42vh;
         border-radius: 18rem;
-        margin-left: 4rem;
+        margin-left: .1px;
     }
 
 
@@ -620,11 +621,11 @@ input[type="number"].removeUpDownNumberInput::-webkit-inner-spin-button {
 
 @media (max-width:365px) {
     .home-img img {
-        width: 80vh;
+        width: 30vh;
     }
 
     .about-img img {
-        width: 80vh;
+        width: 30vh;
     }
 
     .footer {
@@ -636,3 +637,10 @@ input[type="number"].removeUpDownNumberInput::-webkit-inner-spin-button {
         margin-top: 2rem;
     }
 }
+
+body {
+    padding: 0;
+    margin: 0;
+    overflow-x: auto;
+}
+

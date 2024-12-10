@@ -12,11 +12,11 @@
 }
 
 :root {
-    --bg-color: #001f3d;
-    --second-bg-color: #52688f;
-    --text-color: #fff;
-    --main-color: #B3CEE5;
-    --extra-color: #afc1d0;
+    --bg-color: #031716;
+    --second-bg-color: #032f30;
+    --text-color: #274d60;
+    --main-color: #03969c;
+    --extra-color: #274d60;
 }
 
 html {

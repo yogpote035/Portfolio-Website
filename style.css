@@ -56,6 +56,10 @@ body {
 
 }
 
+.service-box ul li .fa-star {
+    font-size: 1.5rem
+}
+
 .navbar a {
     font-size: 1.7rem;
     color: var(--text-color);
@@ -253,7 +257,7 @@ li {
 }
 
 .extra-content {
-margin-left: 3rem;
+    margin-left: 3rem;
     display: none;
 }
 

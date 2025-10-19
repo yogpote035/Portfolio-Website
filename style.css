@@ -16,7 +16,7 @@
   --second-bg-color: #2ceef0;
   --text-color: #000000;
   --main-color: #001242;
-  --extra-color: #ede7d9;
+  --extra-color: #fff;
 }
 
 html {
@@ -640,3 +640,4 @@ body {
 .home-img {
     margin-left: 2rem;
   }
+

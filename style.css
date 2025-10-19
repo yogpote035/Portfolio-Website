@@ -99,7 +99,7 @@ body {
   --second-bg-color: #14213d;
   --text-color: #e5e5e5;
   --main-color: #fca311;
-  --extra-color: #9388a2;
+  --extra-color: #524833;
 }
 
 #menu-icon {
@@ -640,4 +640,5 @@ body {
 .home-img {
     margin-left: 2rem;
   }
+
 

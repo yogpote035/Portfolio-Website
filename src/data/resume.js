@@ -66,7 +66,7 @@ export const education = {
 };
 
 export const stats = [
-  { value: '2', label: 'MERN internships' },
+  { value: '3', label: 'MERN internships' },
   { value: '3+', label: 'Full-stack projects' },
   { value: '25+', label: 'Core technologies' },
   { value: '7.25', label: 'CGPA' },

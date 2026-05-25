@@ -190,6 +190,57 @@ section {
   letter-spacing: 0.03em;
   text-transform: uppercase;
 }
+.note {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  width: fit-content;
+  margin-top: 1rem;
+  margin-bottom: 1.2rem;
+  margin-left: 2rem;
+  padding: 0.8rem 1.5rem;
+
+  color: var(--main-color);
+
+  background: rgba(99, 102, 241, 0.08);
+
+  border: 1px solid rgba(99, 102, 241, 0.14);
+
+  border-radius: 999px;
+
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+
+  backdrop-filter: blur(12px);
+
+  animation: softPulse 3s ease-in-out infinite;
+}
+
+body.dark-mode .note {
+  background: rgba(99, 102, 241, 0.12);
+
+  border: 1px solid rgba(99, 102, 241, 0.2);
+
+  color: #c7d2fe;
+}
+
+@keyframes softPulse {
+  0% {
+    opacity: 0.75;
+    transform: translateY(0px) scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(-2px) scale(1.02);
+  }
+
+  100% {
+    opacity: 0.75;
+    transform: translateY(0px) scale(1);
+  }
+}
 
 .home-content h3 {
   font-size: 2.8rem;
@@ -588,7 +639,7 @@ span,
   min-height: 12rem;
   padding: 1.8rem;
   color: #ffffff;
-  background: var(--gradient);
+  background: var(--text-color);
   border-radius: 1.8rem;
 }
 
@@ -644,7 +695,7 @@ span,
 .project-card img,
 .gallery-grid img {
   width: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .portfolio-box img {
@@ -860,7 +911,7 @@ input[type="number"].removeUpDownNumberInput::-webkit-inner-spin-button {
 .project-detail-hero img {
   width: 100%;
   aspect-ratio: 4 / 3;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 2.4rem;
   box-shadow: 0 1.8rem 4.5rem var(--shadow-color);
 }

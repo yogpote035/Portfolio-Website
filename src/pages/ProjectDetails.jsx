@@ -59,7 +59,7 @@ function ProjectDetails() {
           </ul>
         </motion.article>
 
-        <motion.article className="detail-panel" variants={fadeUp}>
+       <motion.article className="detail-panel" variants={fadeUp}>
           <h2>Technologies Used</h2>
           <div className="tech-stack large">
             {project.techStack.map((tech) => (
@@ -76,6 +76,7 @@ function ProjectDetails() {
             ))}
           </ul>
         </motion.article>
+
 
         <motion.article className="detail-panel" variants={fadeUp}>
           <h2>Project Info</h2>
@@ -110,6 +111,8 @@ function ProjectDetails() {
           ))}
         </ul>
       </motion.article>
+      {project?.note && <span className="note">{project.note}</span>}
+
     </section>
   );
 }

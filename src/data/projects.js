@@ -68,7 +68,7 @@ export const projects = [
       'Redux Toolkit',
       'Node.js',
       'Express.js',
-      'MongoDB',
+      'MySQL',
       'RESTful APIs',
       'Tailwind CSS',
       'JavaScript',

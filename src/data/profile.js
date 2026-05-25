@@ -3,7 +3,7 @@ import resume from '../assets/Yogesh_Pote_Resume.pdf';
 export const profile = {
   name: 'Yogesh Pote',
   title: 'MERN Stack Developer',
-  typedRoles: ['MERN Stack Developer', 'React Developer', 'Full-Stack Developer', 'Software Engineer'],
+  typedRoles: ['MERN Stack Developer', 'React Developer', 'Node.js Developer', 'Full-Stack Developer', 'Software Engineer'],
   resume,
   email: 'yogpote035@gmail.com',
   socials: [

@@ -20,7 +20,7 @@ function ProjectCard({ project, variant = "overlay" }) {
           <h3>{project.title}</h3>
           <p>{project.shortDescription}</p>
           <div className="tech-stack">
-            {project.techStack.slice(0, 4).map((tech) => (
+            {project.techStack.slice(0, 6).map((tech) => (
               <span key={tech}>{tech}</span>
             ))}
           </div>
@@ -28,12 +28,16 @@ function ProjectCard({ project, variant = "overlay" }) {
             <Link className="btn compact-btn" to={`/projects/${project.slug}`}>
               View Details
             </Link>
-            <a href={project.githubUrl} rel="noreferrer" target="_blank">
-              GitHub
-            </a>
-            <a href={project.liveUrl} rel="noreferrer" target="_blank">
-              Live Demo
-            </a>
+           {project && project.githubUrl && project.githubUrl.length > 0 && (
+              <a href={project.githubUrl} rel="noreferrer" target="_blank">
+                GitHub
+              </a>
+            )}
+            {project && project.liveUrl && project.liveUrl.length > 0 && (
+              <a href={project.liveUrl} rel="noreferrer" target="_blank">
+                Live Demo
+              </a>
+            )}
           </div>
         </div>
       </motion.article>

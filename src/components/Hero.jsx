@@ -20,7 +20,7 @@ function Hero() {
         whileInView="visible"
       >
         <motion.span className="eyebrow" variants={fadeUp}>
-          MERN Stack Developer Intern
+          MERN Stack Developer
         </motion.span>
         <motion.h3 variants={fadeUp}>Hello, I Am</motion.h3>
         <h1>{profile.name}</h1>

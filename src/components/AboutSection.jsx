@@ -17,7 +17,7 @@ function AboutSection() {
         <SectionTitle accent="YOGESH">About</SectionTitle>
         <h3>MERN Stack Developer</h3>
         <p>
-          I am a Computer Science student and MERN Stack Developer Intern based in
+          I am a Computer Science student and MERN Stack Developer based in
           Pune, focused on building modern web applications with React.js, Redux
           Toolkit, Node.js, Express.js, MongoDB, and secure authentication workflows.
           My experience includes Manufacturing ERP modules, HRMS platforms, role-based

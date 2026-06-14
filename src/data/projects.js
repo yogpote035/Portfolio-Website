@@ -46,8 +46,97 @@ import TripUpPlanning2 from '../assets/TripUp/TripUpPlanning2.png';
 import TripUpPosts from '../assets/TripUp/TripUpPosts.png';
 import TripUpPostView from '../assets/TripUp/TripUpPostView.png';
 
+// Cab Management ERP Images
+import CabERPCars from '../assets/Cab_Management_system/cars.png';
+import CabERPDashboard from '../assets/Cab_Management_system/dashboard.png';
+import CabERPDrivers from '../assets/Cab_Management_system/drivers.png';
+import CabERPInquiries from '../assets/Cab_Management_system/inquiries.png';
+import CabERPInvoices from '../assets/Cab_Management_system/invoices.png';
+import CabERPLogin from '../assets/Cab_Management_system/Login.png';
+import CabERPManageAdmins from '../assets/Cab_Management_system/manageAdmins.png';
+import CabERPProfile from '../assets/Cab_Management_system/profile.png';
+import CabERPReports from '../assets/Cab_Management_system/reports.png';
+import CabERPTrips from '../assets/Cab_Management_system/Trips.png';
+import CabERPDarkMode from '../assets/Cab_Management_system/darkMode.png';
+
 
 export const projects = [
+  {
+    slug: 'cab-management-erp',
+    title: 'Cab Management ERP',
+    subtitle: 'Billing & Operations Automation',
+    shortDescription:
+      'Full-stack ERP platform for corporate cab operations, trip management, invoicing, payment tracking, and workflow automation.',
+
+    description:
+      'Cab Management & Billing Automation ERP is a full-stack MERN application designed to streamline corporate transportation operations. The platform centralizes cab bookings, driver and vehicle management, trip tracking, duty slips, invoicing, payments, reporting, and administrative workflows through a secure role-based architecture.',
+
+    image: CabERPDashboard,
+
+    accent: 'Enterprise operations platform',
+
+    techStack: [
+      'React.js',
+      'Redux Toolkit',
+      'Node.js',
+      'Express.js',
+      'MongoDB',
+      'JWT',
+      'RBAC',
+      'Tailwind CSS',
+      'Nodemailer',
+      'PDFKit',
+      'ExcelJS',
+      'Imap'
+    ],
+
+    features: [
+      'Corporate cab booking and inquiry management workflows',
+      'Driver, vehicle, trip, and duty slip management modules',
+      'Invoice generation and payment tracking system',
+      'Role-based access control for administrators and operations teams',
+      'Dashboard analytics with operational reporting and insights',
+      'PDF invoice generation and Excel report exports',
+      'Automated email notifications and booking workflow automation',
+      'Audit activity logs and responsive dark/light admin dashboard'
+    ],
+
+    challenges: [
+      'Designing ERP workflows that connect bookings, trips, invoices, and payments in a single platform',
+      'Managing complex application state across multiple operational modules using Redux Toolkit',
+      'Building secure role-based access controls while maintaining a seamless administrative experience'
+    ],
+
+    screenshots: [
+      CabERPDashboard,
+      CabERPTrips,
+      CabERPDrivers,
+      CabERPCars,
+      CabERPInquiries,
+      CabERPInvoices,
+      CabERPManageAdmins,
+      CabERPReports,
+      CabERPProfile,
+      CabERPDarkMode,
+      CabERPLogin,
+    ],
+
+
+    githubUrl: 'https://github.com/yogpote035/Cab-Mgmnt-project',
+
+    liveUrl: 'https://cab-mgmnt-project.vercel.app/',
+
+    duration: 'Professional full-stack build',
+
+    role: 'MERN Stack Developer',
+
+    futureImprovements: [
+      'Add real-time GPS vehicle tracking and route optimization',
+      'Integrate payment gateway support for online invoice payments',
+      'Implement advanced business analytics and operational forecasting'
+    ]
+  }
+  ,
   {
     slug: 'manufacturing-erp',
     title: 'Manufacturing ERP',
@@ -82,7 +171,6 @@ export const projects = [
       'Quality check and inspection modules',
       'Warehouse stock movement and tracking',
       'Operator login and role-based dashboards',
-      'HRMS module for employee management',
       'Transport and dispatch management',
       'Real-time ERP workflow handling with Redux Toolkit',
       'Department-wise role-based access control',
@@ -127,7 +215,7 @@ export const projects = [
       'Click2Hire is a full-stack remote job platform built for recruiters and job seekers. The application focuses on secure hiring workflows, recruiter dashboards, application tracking, and protected role-based experiences powered by a MERN stack architecture.',
     image: Click2HireHome,
     accent: 'Hiring workflow platform',
-    techStack: ['React.js', 'Node.js', 'MongoDB', 'Redux Toolkit', 'JWE', 'RESTful APIs'],
+    techStack: ['React.js', 'Node.js', 'MongoDB', 'Redux Toolkit', 'JWE', 'RESTful APIs',"Gemini API"],
     features: [
       'Recruiter dashboards for managing job posts and candidate pipelines',
       'Real-time application tracking for job seekers and hiring teams',
@@ -135,6 +223,7 @@ export const projects = [
       'Role-based access control for recruiters and job seekers',
       'Centralized application state with Redux Toolkit',
       'Responsive UI optimized for desktop and mobile hiring workflows',
+      'AI Based Resume Review and ATS Optimization powered by Gemini API',
     ],
     challenges: [
       'Designing protected workflows for different user roles without duplicating UI logic',
@@ -197,21 +286,22 @@ export const projects = [
       'TripUp is a travel planning platform focused on booking journeys across buses, trains, and flights. It includes interactive seat selection workflows, itinerary planning, real-time ticket generation, and global session state management with Redux Toolkit.',
     image: TripUpHome2,
     accent: 'Travel booking system',
-    techStack: ['React.js', 'Redux Toolkit', 'Node.js', 'RESTful APIs', 'JavaScript'],
+    techStack: ['React.js', 'Redux Toolkit', 'Node.js', 'RESTful APIs', 'JavaScript',"Gemini API"],
     features: [
       'Bus, train, and flight booking modules',
       'Interactive seat selection workflows',
-      'Itinerary planner powered by global Redux session state',
+      'Itinerary planner powered by Gemini API',
       'Dynamic booking flows with real-time ticket generation',
       'Travel management features for upcoming bookings',
       'Responsive layouts for fast booking across devices',
+      'AI-powered Itinerary Planning using Gemini API',
     ],
     challenges: [
       'Coordinating multi-step booking state across several travel modules',
       'Keeping seat selection interactions clear and reliable',
       'Generating ticket details dynamically after booking confirmation',
     ],
-    screenshots: [TripUpHome,TripUpHome2, TripUpLoading, TripUpBusBookings, TripUpFlightBookings, TripUpPlanning, TripUpPostView, TripUpPosts, TripUpPlanning2, TripUpBookingOptions, TripUpBookingViewAll, TripUpBookingViewAllOptions, TripUpTrainBookings],
+    screenshots: [TripUpHome, TripUpHome2, TripUpLoading, TripUpBusBookings, TripUpFlightBookings, TripUpPlanning, TripUpPostView, TripUpPosts, TripUpPlanning2, TripUpBookingOptions, TripUpBookingViewAll, TripUpBookingViewAllOptions, TripUpTrainBookings],
     githubUrl: 'https://github.com/yogpote035/tripup-travel-app',
     liveUrl: 'https://tripup-travel-app-eight.vercel.app/',
     duration: 'Travel product build',

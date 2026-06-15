@@ -6,7 +6,7 @@ const sectionIds = ['home', 'about', 'skills', 'experience', 'portfolio', 'educa
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(localStorage.getItem('darkMode') === 'true' ? true : false);
   const [sticky, setSticky] = useState(false);
   const activeSection = useActiveSection(sectionIds);
   const location = useLocation();
@@ -26,6 +26,10 @@ function Navbar() {
 
   useEffect(() => {
     document.body.classList.toggle('dark-mode', darkMode);
+  }, [darkMode]);
+
+  useEffect(() => {
+    localStorage.setItem('darkMode', darkMode);
   }, [darkMode]);
 
   useEffect(() => {

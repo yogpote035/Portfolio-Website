@@ -1,4 +1,3 @@
-import AboutSection from '../components/AboutSection.jsx';
 import ContactForm from '../components/ContactForm.jsx';
 import EducationSection from '../components/EducationSection.jsx';
 import ExperienceSection from '../components/ExperienceSection.jsx';
@@ -13,7 +12,6 @@ function Home() {
   return (
     <>
       <Hero />
-      <AboutSection />
       <SkillsSection />
       <ExperienceSection />
       <EducationSection />

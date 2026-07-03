@@ -51,7 +51,7 @@ export const experiences = [
   {
     company: "Zonixtec IT Services Pvt. Ltd.",
     role: "MERN Stack Developer Intern",
-    duration: "March 2026 - Present",
+    duration: "Jan 2026 - June 2026",
     location: "Pune, Maharashtra",
     responsibilities: [
       "Developing frontend modules for a Manufacturing ERP system including production planning, inventory, and work orders using React.js and Redux Toolkit.",
@@ -59,29 +59,29 @@ export const experiences = [
       "Collaborating with backend and QA teams to optimize application performance and complex ERP state management.",
     ],
   },
-  {
-    company: "TDTL (The Data Tech Labs)",
-    role: "MERN Stack Developer Intern",
-    duration: "February 2026 - March 2026",
-    location: "Pune, Maharashtra",
+  // {
+  //   company: "TDTL (The Data Tech Labs)",
+  //   role: "MERN Stack Developer Intern",
+  //   duration: "February 2026 - March 2026",
+  //   location: "Pune, Maharashtra",
 
-    responsibilities: [
-      "Worked on HRMS modules including employee management, attendance workflows, and administrative dashboards using React.js and Node.js.",
-      "Developed responsive frontend interfaces and integrated RESTful APIs for managing employee-related operations and workflow data.",
-      "Collaborated with the development team to improve authentication flows, optimize application performance, and maintain scalable frontend architecture.",
-    ],
-  },
-  {
-    company: "ND SoftTech Solutions",
-    role: "MERN Stack Developer Intern",
-    duration: "December 2025 - January 2026",
-    location: "Pune, Maharashtra",
-    responsibilities: [
-      "Contributed to an HRMS platform featuring employee management and automated attendance tracking modules.",
-      "Implemented secure authentication using JWT/JWE and RBAC to ensure protected data access levels.",
-      "Developed scalable RESTful APIs with structured error handling and backend validation using Node.js and MongoDB.",
-    ],
-  },
+  //   responsibilities: [
+  //     "Worked on HRMS modules including employee management, attendance workflows, and administrative dashboards using React.js and Node.js.",
+  //     "Developed responsive frontend interfaces and integrated RESTful APIs for managing employee-related operations and workflow data.",
+  //     "Collaborated with the development team to improve authentication flows, optimize application performance, and maintain scalable frontend architecture.",
+  //   ],
+  // },
+  // {
+  //   company: "ND SoftTech Solutions",
+  //   role: "MERN Stack Developer Intern",
+  //   duration: "December 2025 - January 2026",
+  //   location: "Pune, Maharashtra",
+  //   responsibilities: [
+  //     "Contributed to an HRMS platform featuring employee management and automated attendance tracking modules.",
+  //     "Implemented secure authentication using JWT/JWE and RBAC to ensure protected data access levels.",
+  //     "Developed scalable RESTful APIs with structured error handling and backend validation using Node.js and MongoDB.",
+  //   ],
+  // },
 ];
 
 export const education = {

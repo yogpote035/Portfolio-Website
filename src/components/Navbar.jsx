@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import useActiveSection from '../hooks/useActiveSection.js';
 
-const sectionIds = ['home', 'about', 'skills', 'experience', 'portfolio', 'education', 'contact'];
+const sectionIds = ['home', 'skills', 'experience', 'portfolio', 'education', 'contact'];
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -14,7 +14,6 @@ function Navbar() {
   const navLinks = useMemo(
     () => [
       { label: 'Home', to: '/#home', section: 'home' },
-      { label: 'About', to: '/#about', section: 'about' },
       { label: 'Skills', to: '/#skills', section: 'skills' },
       { label: 'Experience', to: '/#experience', section: 'experience' },
       { label: 'Projects', to: '/projects', section: 'portfolio' },

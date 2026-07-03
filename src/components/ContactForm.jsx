@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import emailjs from '@emailjs/browser';
 import SectionTitle from './SectionTitle.jsx';
 
 const initialForm = {
@@ -12,21 +13,43 @@ const initialForm = {
 function ContactForm() {
   const [formData, setFormData] = useState(initialForm);
   const [status, setStatus] = useState('');
+  const [loading, setLoading] = useState(false);
+  const formRef = useRef(null);
 
   const updateField = (event) => {
     const { name, value } = event.target;
     setFormData((current) => ({ ...current, [name]: value }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    setStatus('Thanks for reaching out. I will connect with you soon!');
-    setFormData(initialForm);
+    setLoading(true);
+    setStatus('Sending message...');
+
+    try {
+      await emailjs.sendForm(
+        'service_6ct269l',
+        'template_m8q7uro',
+        formRef.current,
+        '6RsfewvnSG-k3-pUj',
+      );
+
+      setStatus('Message sent successfully!');
+      setFormData(initialForm);
+      if (formRef.current) {
+        formRef.current.reset();
+      }
+    } catch (error) {
+      console.error('EmailJS error:', error);
+      setStatus('Failed to send message. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <section className="contact" id="contact">
-      <form onSubmit={handleSubmit} data-reveal>
+      <form ref={formRef} onSubmit={handleSubmit} data-reveal>
         <SectionTitle accent="Developer">Contact</SectionTitle>
         <div className="input-box">
           <input
@@ -79,7 +102,9 @@ function ContactForm() {
           rows="10"
           value={formData.message}
         />
-        <input className="btn" type="submit" value="Send Message" />
+        <button className="btn" type="submit" disabled={loading}>
+          {loading ? 'Sending message...' : 'Send Message'}
+        </button>
         {status && <p className="form-status">{status}</p>}
       </form>
     </section>

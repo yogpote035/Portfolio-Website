@@ -1,5 +1,4 @@
-import { useRef, useState } from 'react';
-import emailjs from '@emailjs/browser';
+import { useState } from 'react';
 import SectionTitle from './SectionTitle.jsx';
 
 const initialForm = {
@@ -14,7 +13,6 @@ function ContactForm() {
   const [formData, setFormData] = useState(initialForm);
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(false);
-  const formRef = useRef(null);
 
   const updateField = (event) => {
     const { name, value } = event.target;
@@ -26,21 +24,25 @@ function ContactForm() {
     setLoading(true);
     setStatus('Sending message...');
 
-    try {
-      await emailjs.sendForm(
-        'service_6ct269l',
-        'template_m8q7uro',
-        formRef.current,
-        '6RsfewvnSG-k3-pUj',
-      );
+    const formDataPayload = new FormData(event.target);
+    formDataPayload.append('access_key', '7d763254-41e8-4fe1-ba0d-295afba43e09');
 
-      setStatus('Message sent successfully!');
-      setFormData(initialForm);
-      if (formRef.current) {
-        formRef.current.reset();
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formDataPayload,
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setStatus('Message sent successfully!');
+        setFormData(initialForm);
+        event.target.reset();
+      } else {
+        setStatus('Failed to send message. Please try again.');
       }
     } catch (error) {
-      console.error('EmailJS error:', error);
+      console.error('Web3Forms error:', error);
       setStatus('Failed to send message. Please try again.');
     } finally {
       setLoading(false);
@@ -49,7 +51,7 @@ function ContactForm() {
 
   return (
     <section className="contact" id="contact">
-      <form ref={formRef} onSubmit={handleSubmit} data-reveal>
+      <form onSubmit={handleSubmit} data-reveal>
         <SectionTitle accent="Developer">Contact</SectionTitle>
         <div className="input-box">
           <input

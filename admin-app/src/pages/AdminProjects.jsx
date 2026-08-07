@@ -4,6 +4,8 @@ import { parseValidationErrors } from '../utils/errorHelpers.js';
 import { useNavigate, Link, useLocation, useParams } from 'react-router-dom';
 import LoadingOverlay from '../components/LoadingOverlay.jsx';
 
+const portfolioBaseUrl = import.meta.env.VITE_PORTFOLIO_URL || 'http://localhost:5173';
+
 const initialForm = {
     name: '',
     slug: '',
@@ -581,7 +583,7 @@ function AdminProjects() {
                                 Edit
                             </Link>
                             {selectedProject.slug && (
-                                <a className="admin-link-button" href={`http://localhost:5173/projects/${selectedProject.slug}`} target="_blank" rel="noreferrer">
+                                <a className="admin-link-button" href={`${portfolioBaseUrl}/projects/${selectedProject.slug}`} target="_blank" rel="noreferrer">
                                     View public
                                 </a>
                             )}
@@ -850,7 +852,7 @@ function AdminProjects() {
                                                             Edit
                                                         </Link>
                                                         {project.slug && (
-                                                            <a className="admin-link" href={`http://localhost:5173/projects/${project.slug}`} target="_blank" rel="noreferrer">
+                                                            <a className="admin-link" href={`${portfolioBaseUrl}/projects/${project.slug}`} target="_blank" rel="noreferrer">
                                                                 Public
                                                             </a>
                                                         )}
@@ -900,7 +902,7 @@ function AdminProjects() {
                                                                 Edit
                                                             </Link>
                                                             {project.slug && (
-                                                                <a className="admin-link" href={`http://localhost:5173/projects/${project.slug}`} target="_blank" rel="noreferrer">
+                                                                <a className="admin-link" href={`${portfolioBaseUrl}/projects/${project.slug}`} target="_blank" rel="noreferrer">
                                                                     Public
                                                                 </a>
                                                             )}

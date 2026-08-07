@@ -3,3 +3,6 @@ dist/
 .env
 .env.local
 npm-debug.log*
+server/node_modules/
+server/uploads/
+server/.env

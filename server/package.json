@@ -1,0 +1,32 @@
+{
+  "name": "portfolio-cms-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "db:schema": "node src/scripts/applySchema.js",
+    "db:seed-static": "node src/scripts/seedStaticData.js",
+    "db:seed-admin": "node src/scripts/seedAdmin.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.111.0",
+    "bcrypt": "^6.0.0",
+    "cloudinary": "^2.5.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "multer": "^2.0.2",
+    "mysql2": "^3.11.5",
+    "nanoid": "^5.0.9",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}

@@ -1,0 +1,172 @@
+export const projects = [
+    {
+        slug: 'cab-management-erp',
+        title: 'Cab Management ERP',
+        shortDescription:
+            'Full-stack ERP platform for corporate cab operations, trip management, invoicing, payment tracking, and workflow automation.',
+        description:
+            'Cab Management & Billing Automation ERP is a full-stack MERN application designed to streamline corporate transportation operations. The platform centralizes cab bookings, driver and vehicle management, trip tracking, duty slips, invoicing, payments, reporting, and administrative workflows through a secure role-based architecture.',
+        techStack: [
+            'React.js',
+            'Redux Toolkit',
+            'Node.js',
+            'Express.js',
+            'MongoDB',
+            'JWT',
+            'RBAC',
+            'Tailwind CSS',
+            'Nodemailer',
+            'PDFKit',
+            'ExcelJS',
+            'Imap',
+        ],
+        features: [
+            'Corporate cab booking and inquiry management workflows',
+            'Driver, vehicle, trip, and duty slip management modules',
+            'Invoice generation and payment tracking system',
+            'Role-based access control for administrators and operations teams',
+            'Dashboard analytics with operational reporting and insights',
+            'PDF invoice generation and Excel report exports',
+            'Automated email notifications and booking workflow automation',
+            'Audit activity logs and responsive dark/light admin dashboard',
+        ],
+        challenges: [
+            'Designing ERP workflows that connect bookings, trips, invoices, and payments in a single platform',
+            'Managing complex application state across multiple operational modules using Redux Toolkit',
+            'Building secure role-based access controls while maintaining a seamless administrative experience',
+        ],
+        futureImprovements: [
+            'Add real-time GPS vehicle tracking and route optimization',
+            'Integrate payment gateway support for online invoice payments',
+            'Implement advanced business analytics and operational forecasting',
+        ],
+        githubUrl: 'https://github.com/yogpote035/Cab-Mgmnt-project',
+        liveUrl: 'https://cab-mgmnt-project.vercel.app/',
+    },
+    {
+        slug: 'manufacturing-erp',
+        title: 'Manufacturing ERP',
+        shortDescription:
+            'Enterprise ERP platform for managing manufacturing operations including production planning, inventory, HRMS, warehouse, transport, and sales workflows.',
+        description:
+            'Manufacturing ERP is a large-scale enterprise management platform currently being developed as part of my company work experience. The system is designed to streamline manufacturing workflows across multiple departments including sales, production planning, inventory management, purchase operations, quality checks, warehouse tracking, transport coordination, operator management, and employee HRMS. The platform focuses on improving operational efficiency, centralized workflow management, and real-time process visibility using scalable React architecture and Redux Toolkit.',
+        techStack: ['React.js', 'Redux Toolkit', 'Node.js', 'Express.js', 'MySQL', 'RESTful APIs', 'Tailwind CSS', 'JavaScript'],
+        features: [
+            'Sales order and quotation management',
+            'Production planning and workflow scheduling',
+            'Inventory and stock management system',
+            'Purchase and vendor management workflows',
+            'Quality check and inspection modules',
+            'Warehouse stock movement and tracking',
+            'Operator login and role-based dashboards',
+            'Transport and dispatch management',
+            'Real-time ERP workflow handling with Redux Toolkit',
+            'Department-wise role-based access control',
+            'Responsive enterprise dashboards and workflow panels',
+        ],
+        challenges: [
+            'Managing complex interconnected ERP workflows across multiple modules',
+            'Handling large-scale state management using Redux Toolkit',
+            'Maintaining synchronization between production, inventory, and warehouse systems',
+            'Building scalable and reusable frontend architecture for enterprise applications',
+        ],
+        futureImprovements: [
+            'Advanced analytics and reporting dashboards',
+            'Barcode and QR-based warehouse management',
+            'Real-time production monitoring',
+            'Approval and notification workflows',
+            'AI-powered inventory and demand forecasting',
+        ],
+        githubUrl: '',
+        liveUrl: '',
+    },
+    {
+        slug: 'click2hire',
+        title: 'Click2Hire',
+        shortDescription:
+            'Full-stack job portal with recruiter dashboards, secure role-based access, and real-time application tracking.',
+        description:
+            'Click2Hire is a full-stack remote job platform built for recruiters and job seekers. The application focuses on secure hiring workflows, recruiter dashboards, application tracking, and protected role-based experiences powered by a MERN stack architecture.',
+        techStack: ['React.js', 'Node.js', 'MongoDB', 'Redux Toolkit', 'JWE', 'RESTful APIs', 'Gemini API'],
+        features: [
+            'Recruiter dashboards for managing job posts and candidate pipelines',
+            'Real-time application tracking for job seekers and hiring teams',
+            'JWE-based route protection and secure API communication',
+            'Role-based access control for recruiters and job seekers',
+            'Centralized application state with Redux Toolkit',
+            'Responsive UI optimized for desktop and mobile hiring workflows',
+            'AI Based Resume Review and ATS Optimization powered by Gemini API',
+        ],
+        challenges: [
+            'Designing protected workflows for different user roles without duplicating UI logic',
+            'Managing recruiter, seeker, and application state consistently across the app',
+            'Keeping API integration secure while preserving a smooth user experience',
+        ],
+        futureImprovements: [
+            'Add advanced recruiter analytics and hiring funnel insights',
+            'Integrate email notifications for application status changes',
+            'Add saved searches and recommendation logic for job seekers',
+        ],
+        githubUrl: 'https://github.com/yogpote035/Click2Hire-Remote-Job-Platform',
+        liveUrl: 'https://click2-hire-remote-job-platform.vercel.app/',
+    },
+    {
+        slug: 'rentbox',
+        title: 'RentBox',
+        shortDescription:
+            'Rental e-commerce platform with CRUD listings, Firebase authentication, booking APIs, and responsive UI components.',
+        description:
+            'RentBox is a smart rental marketplace designed for listing, discovering, and booking rental products. It combines Firebase Google Authentication, modular Express APIs, and reusable React UI components to create a secure and responsive rental experience.',
+        techStack: ['React.js', 'Firebase', 'Express.js', 'Google Auth', 'RESTful APIs', 'CSS3'],
+        features: [
+            'CRUD listing flows for rental products',
+            'Firebase Google Authentication for fast and secure sign-in',
+            'Booking workflow APIs with optimized token handling',
+            'Reusable responsive UI components for listings and actions',
+            'Session-aware user experience across devices',
+            'Performance-focused layouts for mobile and desktop screens',
+        ],
+        challenges: [
+            'Balancing Firebase authentication with custom backend API workflows',
+            'Designing listing CRUD flows that stay simple and scalable',
+            'Optimizing token handling for secure user sessions',
+        ],
+        futureImprovements: [
+            'Add payment integration for confirmed bookings',
+            'Introduce owner dashboards and rental performance stats',
+            'Add location-based discovery and filtering',
+        ],
+        githubUrl: 'https://github.com/yogpote035/RentBox-Smart-Rental-E-Commerce-Platform',
+        liveUrl: 'https://rent-box-rentals.vercel.app/',
+    },
+    {
+        slug: 'tripup',
+        title: 'TripUp',
+        shortDescription:
+            'Travel booking platform with bus, train, and flight modules, interactive seat selection, and itinerary planning.',
+        description:
+            'TripUp is a travel planning platform focused on booking journeys across buses, trains, and flights. It includes interactive seat selection workflows, itinerary planning, real-time ticket generation, and global session state management with Redux Toolkit.',
+        techStack: ['React.js', 'Redux Toolkit', 'Node.js', 'RESTful APIs', 'JavaScript', 'Gemini API'],
+        features: [
+            'Bus, train, and flight booking modules',
+            'Interactive seat selection workflows',
+            'Itinerary planner powered by Gemini API',
+            'Dynamic booking flows with real-time ticket generation',
+            'Travel management features for upcoming bookings',
+            'Responsive layouts for fast booking across devices',
+            'AI-powered Itinerary Planning using Gemini API',
+        ],
+        challenges: [
+            'Coordinating multi-step booking state across several travel modules',
+            'Keeping seat selection interactions clear and reliable',
+            'Generating ticket details dynamically after booking confirmation',
+        ],
+        futureImprovements: [
+            'Add payment and cancellation workflows',
+            'Introduce fare comparison and smarter filters',
+            'Add booking notifications and downloadable tickets',
+        ],
+        githubUrl: 'https://github.com/yogpote035/tripup-travel-app',
+        liveUrl: 'https://tripup-travel-app-eight.vercel.app/',
+    },
+];

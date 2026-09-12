@@ -1,6 +1,5 @@
 import {
   PageHeader,
-  FormField,
   ErrorState,
   EmptyState,
   DataTable,
@@ -19,6 +18,7 @@ import {
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { apiBase } from "../utils/apiClient.js";
 import LoadingOverlay from "../components/LoadingOverlay.jsx";
+import DocumentDropZone from "../components/DocumentDropZone.jsx";
 
 function AdminResumes() {
   const notify = useToast();
@@ -246,20 +246,15 @@ function AdminResumes() {
               onSubmit={handleUpload}
               className="admin-form admin-resume-form"
             >
-              <FormField>
-                Select resume file
-                <input
-                  type="file"
-                  accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                  onChange={(e) => setFile(e.target.files?.[0] || null)}
-                  required
-                />
-              </FormField>
-              {file && (
-                <p className="admin-resume-file-name">
-                  Selected file: {file.name}
-                </p>
-              )}
+              <DocumentDropZone
+                file={file}
+                disabled={uploading}
+                onFile={(selectedFile) => {
+                  setFile(selectedFile);
+                  setError(null);
+                }}
+                onRejected={(message) => setError(message || null)}
+              />
               <div className="form-actions-row admin-resume-actions">
                 <button
                   type="submit"

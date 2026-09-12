@@ -14,7 +14,13 @@ import { recordContentVersion } from '../services/contentVersion.service.js';
 
 export async function getProjects(req, res) {
     const projects = await findProjects();
-    return sendSuccess(res, 'Projects fetched successfully', projects);
+    const projectsWithTechnologies = await Promise.all(
+        projects.map(async (project) => ({
+            ...project,
+            technologies: await findProjectTechnologies(project.id),
+        })),
+    );
+    return sendSuccess(res, 'Projects fetched successfully', projectsWithTechnologies);
 }
 
 export async function getProjectBySlug(req, res) {

@@ -30,6 +30,7 @@ const initialForm = {
   name: "",
   slug: "",
   subtitle: "",
+  role: "",
   short_description: "",
   full_description: "",
   github_url: "",
@@ -408,6 +409,7 @@ function AdminProjects() {
       name: project.name || "",
       slug: project.slug || "",
       subtitle: project.subtitle || "",
+      role: project.role || "",
       short_description: project.short_description || "",
       full_description: project.full_description || "",
       github_url: project.github_url || "",
@@ -603,6 +605,7 @@ function AdminProjects() {
       requestBody.featured = Boolean(requestBody.featured);
       requestBody.project_type = requestBody.project_type || "personal";
       requestBody.subtitle = requestBody.subtitle?.trim() || null;
+      requestBody.role = requestBody.role?.trim() || null;
       requestBody.github_url = requestBody.github_url || null;
       requestBody.live_url = requestBody.live_url || null;
       requestBody.completion_date = requestBody.completion_date || null;
@@ -828,6 +831,7 @@ function AdminProjects() {
                 {statusLabels[selectedProject.status] || selectedProject.status}
               </p>
               <p>Slug: {selectedProject.slug}</p>
+              <p>Role: {selectedProject.role || "Not added"}</p>
               <p>Display order: {selectedProject.display_order ?? 1}</p>
               <p>
                 {projectTypeLabels[
@@ -936,6 +940,24 @@ function AdminProjects() {
                   {validationErrors.subtitle && (
                     <span className="admin-field-error">
                       {validationErrors.subtitle}
+                    </span>
+                  )}
+                </FormField>
+                <FormField>
+                  Role
+                  <input
+                    type="text"
+                    value={form.role}
+                    onChange={handleFieldChange("role")}
+                    placeholder="e.g. Full-stack Developer"
+                    maxLength="180"
+                  />
+                  <span className="admin-help-text">
+                    Your role on this project, shown in the public case study.
+                  </span>
+                  {validationErrors.role && (
+                    <span className="admin-field-error">
+                      {validationErrors.role}
                     </span>
                   )}
                 </FormField>

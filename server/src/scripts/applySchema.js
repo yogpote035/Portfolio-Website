@@ -148,6 +148,13 @@ async function applyIncrementalMigrations(connection) {
         );
     }
 
+    if (!(await columnExists(connection, 'projects', 'role'))) {
+        await connection.query(
+            `ALTER TABLE projects
+       ADD COLUMN role VARCHAR(180) NULL AFTER subtitle`,
+        );
+    }
+
     if (!(await columnExists(connection, 'projects', 'project_type'))) {
         await connection.query(
             `ALTER TABLE projects

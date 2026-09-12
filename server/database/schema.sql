@@ -117,6 +117,7 @@ CREATE TABLE IF NOT EXISTS projects (
   short_description VARCHAR(500) NOT NULL,
   full_description TEXT NOT NULL,
   subtitle VARCHAR(255) NULL,
+  role VARCHAR(180) NULL,
   thumbnail_media_id BIGINT UNSIGNED NULL,
   cover_media_id BIGINT UNSIGNED NULL,
   github_url VARCHAR(255) NULL,

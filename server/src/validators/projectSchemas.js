@@ -28,6 +28,7 @@ const projectBodySchema = z.object({
     short_description: z.string().min(1),
     full_description: z.string().min(1),
     subtitle: trimNullableString,
+    role: trimNullableString,
     thumbnail_media_id: z.number().int().positive().nullable().optional(),
     cover_media_id: z.number().int().positive().nullable().optional(),
     github_url: urlSchema,

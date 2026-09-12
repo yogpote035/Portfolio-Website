@@ -1374,13 +1374,32 @@ function AdminProjects() {
               label: "Technologies",
               search: (p) =>
                 (p.technologies || []).map((t) => t.name).join(" "),
-              render: (p) => (
-                <div className="cms-tech-list">
-                  {(p.technologies || []).map((t) => (
-                    <StatusBadge key={t.id || t.name}>{t.name}</StatusBadge>
-                  ))}
-                </div>
-              ),
+              render: (p) => {
+                const technologies = p.technologies || [];
+                const visibleTechnologies = technologies.slice(0, 4);
+                const remainingCount =
+                  technologies.length - visibleTechnologies.length;
+
+                return (
+                  <div
+                    className="cms-tech-list cms-tech-list-compact"
+                    title={technologies.map((t) => t.name).join(", ")}
+                  >
+                    {visibleTechnologies.map((t) => (
+                      <StatusBadge key={t.id || t.name}>{t.name}</StatusBadge>
+                    ))}
+                    {remainingCount > 0 && (
+                      <span
+                        className="admin-chip cms-tech-more"
+                        aria-label={remainingCount + " more technologies"}
+                      >
+                        +{remainingCount}
+                      </span>
+                    )}
+                    {technologies.length === 0 && <span>—</span>}
+                  </div>
+                );
+              },
             },
             { key: "display_order", label: "Order" },
             {

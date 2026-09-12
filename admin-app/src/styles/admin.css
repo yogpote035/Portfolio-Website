@@ -905,6 +905,29 @@ td small {
   font-size: 11px;
   margin-top: 4px;
 }
+.cms-tech-list-compact {
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  align-content: center;
+  gap: 5px;
+  min-width: 150px;
+  max-width: 210px;
+}
+
+.cms-tech-list-compact .admin-chip {
+  max-width: 98px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cms-tech-list-compact .cms-tech-more {
+  justify-content: center;
+  color: var(--primary);
+  background: var(--primary-soft);
+  border-color: transparent;
+  font-weight: 650;
+}
+
 .cms-table-identity {
   display: flex;
   align-items: center;

@@ -1,7 +1,8 @@
 import { FormField, ErrorState } from "../components/ui.jsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { login } from "../utils/authClient.js";
+import { fetchApi } from "../utils/apiClient.js";
 import LoadingOverlay from "../components/LoadingOverlay.jsx";
 
 function AdminLogin() {
@@ -9,9 +10,24 @@ function AdminLogin() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [heroImageUrl, setHeroImageUrl] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
   const redirectTo = location.state?.from?.pathname || "/";
+
+  useEffect(() => {
+    let active = true;
+    fetchApi("/api/profile")
+      .then((data) => {
+        if (active) setHeroImageUrl(data?.coverPhotoUrl || "");
+      })
+      .catch(() => {
+        if (active) setHeroImageUrl("");
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -34,7 +50,15 @@ function AdminLogin() {
       <div className="admin-login-card">
         <div className="cms-login-brand">
           <span className="admin-brand-mark">
-            p<span>·</span>
+            {heroImageUrl ? (
+              <img
+                src={heroImageUrl}
+                alt="Yogesh Pote"
+                onError={() => setHeroImageUrl("")}
+              />
+            ) : (
+              <>p<span>·</span></>
+            )}
           </span>
           Portfolio CMS
         </div>

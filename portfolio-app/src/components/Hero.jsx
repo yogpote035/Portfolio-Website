@@ -82,7 +82,6 @@ function Hero() {
         )}
       </motion.div>
       <motion.div className="home-img hero-visual" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .7, delay: .2 }}>
-        <span className="image-label">01 / Portrait</span>
         <SmartImage src={profileData.heroImage || profile.heroImage} alt={profileData.name} eager />
         <div className="hero-image-note"><strong>React + Node.js</strong><span>Design-minded engineering</span></div>
       </motion.div>

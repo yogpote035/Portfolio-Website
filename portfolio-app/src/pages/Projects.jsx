@@ -10,18 +10,6 @@ import { staggerContainer, viewport } from '../utils/animations.js';
 
 const filterDefinitions = [
   {
-    label: 'Full stack',
-    matches: (project) => /node|express|mern|full[ -]?stack/i.test(
-      `${project.title} ${project.subtitle} ${project.techStack.join(' ')}`,
-    ),
-  },
-  {
-    label: 'Frontend',
-    matches: (project) => /react|frontend|html|css|tailwind|bootstrap/i.test(
-      `${project.title} ${project.subtitle} ${project.techStack.join(' ')}`,
-    ),
-  },
-  {
     label: 'Enterprise',
     matches: (project) => project.projectType === 'company',
   },

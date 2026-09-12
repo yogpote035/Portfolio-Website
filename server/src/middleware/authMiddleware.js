@@ -25,7 +25,15 @@ export async function authenticate(req, res, next) {
     next();
   } catch (error) {
     error.statusCode = error.statusCode || 401;
-    error.message = error.message || 'Unauthorized';
+    if (error.name === 'TokenExpiredError') {
+      error.message = 'Access token expired';
+      error.code = 'ACCESS_TOKEN_EXPIRED';
+    } else if (error.name === 'JsonWebTokenError') {
+      error.message = 'Invalid access token';
+      error.code = 'INVALID_ACCESS_TOKEN';
+    } else {
+      error.message = error.message || 'Unauthorized';
+    }
     next(error);
   }
 }

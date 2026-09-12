@@ -54,7 +54,14 @@ export async function login(req, res) {
 
 export async function refreshToken(req, res) {
   const { refreshToken: token } = req.validated.body;
-  const payload = verifyRefreshToken(token);
+  let payload;
+  try {
+    payload = verifyRefreshToken(token);
+  } catch (error) {
+    const authError = new Error(error.name === 'TokenExpiredError' ? 'Refresh token expired' : 'Invalid refresh token');
+    authError.statusCode = 401;
+    throw authError;
+  }
   const user = await findUserById(payload.sub);
 
   if (!user || !user.is_active || user.token_version !== payload.tokenVersion) {

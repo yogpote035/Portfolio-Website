@@ -16,7 +16,7 @@ export function errorMiddleware(error, req, res, next) {
         : 'Invalid file upload request';
   }
 
-  if (process.env.NODE_ENV !== 'test') {
+  if (process.env.NODE_ENV !== 'test' && statusCode >= 500) {
     console.error(error);
   }
 

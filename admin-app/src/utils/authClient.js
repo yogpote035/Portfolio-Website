@@ -2,6 +2,7 @@ import { apiBase } from './apiClient.js';
 
 const ACCESS_TOKEN_KEY = 'portfolio_admin_access_token';
 const REFRESH_TOKEN_KEY = 'portfolio_admin_refresh_token';
+let refreshPromise = null;
 
 export function getAccessToken() {
     return localStorage.getItem(ACCESS_TOKEN_KEY);
@@ -27,6 +28,15 @@ export function clearAuthTokens() {
 
 export function isAuthenticated() {
     return Boolean(getAccessToken());
+}
+
+function isTokenExpiring(token, bufferSeconds = 30) {
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+        return !payload.exp || payload.exp * 1000 <= Date.now() + bufferSeconds * 1000;
+    } catch {
+        return true;
+    }
 }
 
 async function parseApiResponse(response) {
@@ -102,7 +112,7 @@ export async function login({ email, password }) {
     return payload.data;
 }
 
-export async function refreshAccessToken() {
+async function performTokenRefresh() {
     const refreshToken = getRefreshToken();
     if (!refreshToken) {
         throw new Error('Refresh token unavailable');
@@ -125,6 +135,15 @@ export async function refreshAccessToken() {
     return payload.data;
 }
 
+export function refreshAccessToken() {
+    if (!refreshPromise) {
+        refreshPromise = performTokenRefresh().finally(() => {
+            refreshPromise = null;
+        });
+    }
+    return refreshPromise;
+}
+
 export async function logout() {
     const token = getAccessToken();
     clearAuthTokens();
@@ -145,6 +164,15 @@ export async function fetchApiAuth(path, options = {}) {
     let token = getAccessToken();
     if (!token) {
         throw new Error('Authentication required');
+    }
+
+    if (isTokenExpiring(token)) {
+        try {
+            token = (await refreshAccessToken()).accessToken;
+        } catch (error) {
+            clearAuthTokens();
+            throw error;
+        }
     }
 
     const isFormData = options.body instanceof FormData;

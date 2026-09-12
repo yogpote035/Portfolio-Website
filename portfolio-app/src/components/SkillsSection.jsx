@@ -15,7 +15,7 @@ function SkillsSection() {
   return (
     <section className="skills-section" id="skills">
       <div className="section-intro">
-        <SectionTitle accent="Skills">Technical</SectionTitle>
+        <SectionTitle accent="capabilities" index="02">Technical</SectionTitle>
         <p>
           A practical MERN-focused toolkit across frontend engineering, backend APIs,
           databases, authentication, and deployment platforms.
@@ -29,9 +29,8 @@ function SkillsSection() {
         whileInView="visible"
       >
         {skills.map((group) => (
-          <motion.article className="skill-card" key={group.category} variants={fadeUp} whileHover={{ y: -8 }}>
-            <i className={`bx ${group.icon}`} />
-            <h3>{group.category}</h3>
+          <motion.article className="skill-card" key={group.category} variants={fadeUp}>
+            <div className="skill-heading"><i className={`bx ${group.icon}`} /><h3>{group.category}</h3><span>{String(group.skills.length).padStart(2, '0')}</span></div>
             <div className="skill-tags">
               {group.skills.map((skill) => (
                 <span key={skill}>{skill}</span>

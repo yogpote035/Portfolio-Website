@@ -4,9 +4,11 @@ export async function findProfile() {
     const [rows] = await pool.execute(
         `SELECT
           p.*,
-          cover_photo.url AS cover_photo_url
+          cover_photo.url AS cover_photo_url,
+          about_image.url AS about_image_url
         FROM profile p
         LEFT JOIN media cover_photo ON cover_photo.id = p.cover_photo_media_id
+        LEFT JOIN media about_image ON about_image.id = p.about_image_media_id
         ORDER BY p.id ASC
         LIMIT 1`,
     );
@@ -19,15 +21,17 @@ export async function createProfile(profileData) {
       name,
       designation,
       cover_photo_media_id,
+      about_image_media_id,
       about,
       email,
       phone,
       location
-    ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
         [
             profileData.name,
             profileData.designation,
             profileData.cover_photo_media_id || null,
+            profileData.about_image_media_id || null,
             profileData.about || null,
             profileData.email || null,
             profileData.phone || null,
@@ -44,6 +48,7 @@ export async function updateProfileRow(profileId, profileData) {
       name = ?,
       designation = ?,
       cover_photo_media_id = ?,
+      about_image_media_id = ?,
       about = ?,
       email = ?,
       phone = ?,
@@ -54,6 +59,7 @@ export async function updateProfileRow(profileId, profileData) {
             profileData.name,
             profileData.designation,
             profileData.cover_photo_media_id || null,
+            profileData.about_image_media_id || null,
             profileData.about || null,
             profileData.email || null,
             profileData.phone || null,

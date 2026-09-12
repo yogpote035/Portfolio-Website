@@ -1,62 +1,86 @@
-import { useState } from 'react';
-import { fetchApiAuth } from '../utils/authClient.js';
+import { useEffect, useState } from "react";
+import { fetchApiAuth } from "../utils/authClient.js";
+import ImageDropZone from "./ImageDropZone.jsx";
 
-function ImageUploadField({ label, folder, valueUrl, onUploaded, previewAlt = 'Uploaded image preview' }) {
-    const [previewUrl, setPreviewUrl] = useState(valueUrl || '');
-    const [uploading, setUploading] = useState(false);
-    const [error, setError] = useState('');
+function ImageUploadField({
+  label,
+  folder,
+  valueUrl,
+  onUploaded,
+  previewAlt = "Uploaded image preview",
+}) {
+  const [previewUrl, setPreviewUrl] = useState(valueUrl || "");
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
 
-    const isImageFile = (file) => file && typeof file.type === 'string' && file.type.startsWith('image/');
+  useEffect(() => {
+    setPreviewUrl(valueUrl || "");
+  }, [valueUrl]);
+  useEffect(
+    () => () => {
+      if (previewUrl.startsWith("blob:")) URL.revokeObjectURL(previewUrl);
+    },
+    [previewUrl],
+  );
 
-    const handleFileChange = async (event) => {
-        const file = event.target.files?.[0];
-        if (!file) {
-            return;
-        }
+  const isImageFile = (file) =>
+    file && typeof file.type === "string" && file.type.startsWith("image/");
 
-        if (!isImageFile(file)) {
-            setError('Only image files are allowed.');
-            setPreviewUrl(valueUrl || '');
-            return;
-        }
+  const handleFiles = async (files) => {
+    const file = files?.[0];
+    if (!file) {
+      return;
+    }
 
-        setError('');
-        setUploading(true);
-        setPreviewUrl(URL.createObjectURL(file));
+    if (!isImageFile(file)) {
+      setError("Only image files are allowed.");
+      setPreviewUrl(valueUrl || "");
+      return;
+    }
 
-        try {
-            const formData = new FormData();
-            formData.append('image', file);
-            formData.append('folder', folder);
+    setError("");
+    setUploading(true);
+    setPreviewUrl(URL.createObjectURL(file));
 
-            const media = await fetchApiAuth('/api/admin/media/images', {
-                method: 'POST',
-                body: formData,
-            });
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+      formData.append("folder", folder);
 
-            setPreviewUrl(media.url);
-            onUploaded(media);
-        } catch (err) {
-            setError(err.message || 'Image upload failed');
-            setPreviewUrl(valueUrl || '');
-        } finally {
-            setUploading(false);
-        }
-    };
+      const media = await fetchApiAuth("/api/admin/media/images", {
+        method: "POST",
+        body: formData,
+      });
 
-    return (
-        <label className="admin-upload-field">
-            {label}
-            <input type="file" accept="image/*" onChange={handleFileChange} disabled={uploading} />
-            {previewUrl ? (
-                <span className="admin-upload-preview">
-                    <img src={previewUrl} alt={previewAlt} loading="lazy" />
-                </span>
-            ) : null}
-            {uploading ? <span className="admin-help-text">Uploading image...</span> : null}
-            {error ? <span className="admin-field-error">{error}</span> : null}
-        </label>
-    );
+      setPreviewUrl(media.url);
+      onUploaded(media);
+    } catch (err) {
+      setError(err.message || "Image upload failed");
+      setPreviewUrl(valueUrl || "");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <div className="admin-upload-field">
+      <ImageDropZone
+        label={label}
+        onFiles={handleFiles}
+        onRejected={(message) => setError(message)}
+        disabled={uploading}
+      />
+      {previewUrl ? (
+        <span className="admin-upload-preview">
+          <img src={previewUrl} alt={previewAlt} loading="lazy" />
+        </span>
+      ) : null}
+      {uploading ? (
+        <span className="admin-help-text">Uploading image...</span>
+      ) : null}
+      {error ? <span className="admin-field-error">{error}</span> : null}
+    </div>
+  );
 }
 
 export default ImageUploadField;

@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { fadeUp } from "../utils/animations.js";
+import SmartImage from './SmartImage.jsx';
 
 function ProjectCard({ project, variant = "overlay" }) {
   if (variant === "card") {
@@ -10,11 +11,7 @@ function ProjectCard({ project, variant = "overlay" }) {
         variants={fadeUp}
         whileHover={{ y: -10 }}
       >
-        <img
-          src={project.image}
-          alt={`${project.title} preview`}
-          loading="lazy"
-        />
+        <SmartImage src={project.image} alt={`${project.title} preview`} fallbackText={project.title} />
         <div className="project-card-body">
           <span className="eyebrow">{project.subtitle}</span>
           <h3>{project.title}</h3>
@@ -50,11 +47,7 @@ function ProjectCard({ project, variant = "overlay" }) {
       variants={fadeUp}
       whileHover={{ y: -8 }}
     >
-      <img
-        src={project.image}
-        alt={`${project.title} preview`}
-        loading="lazy"
-      />
+      <Link className="project-image-link" to={`/projects/${project.slug}`} aria-label={`View ${project.title}`}><SmartImage src={project.image} alt={`${project.title} interface`} fallbackText={project.title} /></Link>
       <div className="portfolio-layer">
         <div className="portfolio-copy">
           {project.subtitle && <span className="project-kicker">{project.subtitle}</span>}
@@ -71,7 +64,7 @@ function ProjectCard({ project, variant = "overlay" }) {
             aria-label={`View ${project.title} details`}
             to={`/projects/${project.slug}`}
           >
-            <i className="bx bx-detail" />
+              View case study <i className="bx bx-right-arrow-alt" />
           </Link>
           {project.liveUrl && (
             <a

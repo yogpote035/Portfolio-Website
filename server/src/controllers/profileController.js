@@ -23,6 +23,8 @@ function formatProfile(profile) {
         designation: profile.designation,
         coverPhotoMediaId: profile.cover_photo_media_id,
         coverPhotoUrl: profile.cover_photo_url,
+        aboutImageMediaId: profile.about_image_media_id,
+        aboutImageUrl: profile.about_image_url,
         about: profile.about,
         email: profile.email,
         phone: profile.phone,

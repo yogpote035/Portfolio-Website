@@ -21,11 +21,43 @@ async function getActiveResumeUrl() {
         throw error;
     }
 
-    const resumeUrl = resume.storage_path
-        ? await getResumeUrl(resume.storage_path)
-        : resume.file_url;
+    const storedUrlIsDurable = resume.file_url && !resume.file_url.includes('/storage/v1/object/sign/');
+    let resumeUrl = storedUrlIsDurable ? resume.file_url : null;
+
+    if (resume.storage_path) {
+        try {
+            resumeUrl = await getResumeUrl(resume.storage_path);
+        } catch (error) {
+            if (!resumeUrl) throw error;
+        }
+    }
 
     return { resume, resumeUrl };
+}
+
+async function withFreshPreview(resume) {
+    if (!resume) return resume;
+
+    const storedUrlIsDurable = resume.file_url && !resume.file_url.includes('/storage/v1/object/sign/');
+    let previewUrl = storedUrlIsDurable ? resume.file_url : null;
+    let previewAvailable = Boolean(previewUrl);
+
+    if (resume.storage_path) {
+        try {
+            previewUrl = await getResumeUrl(resume.storage_path);
+            previewAvailable = Boolean(previewUrl);
+        } catch {
+            // Older rows can reference moved or deleted objects. Keep list retrieval usable.
+            previewAvailable = Boolean(previewUrl);
+        }
+    }
+
+    return {
+        ...resume,
+        file_url: previewUrl,
+        preview_url: previewUrl,
+        preview_available: previewAvailable,
+    };
 }
 
 export async function uploadNewResume(req, res) {
@@ -59,7 +91,7 @@ export async function getPublicResume(req, res) {
     try {
         activeResume = await getActiveResumeUrl();
     } catch (error) {
-        if (error.code === 'ER_NO_SUCH_TABLE') {
+        if (error.code === 'ER_NO_SUCH_TABLE' || error.code === 'RESUME_PREVIEW_UNAVAILABLE') {
             activeResume = null;
         } else {
             throw error;
@@ -101,7 +133,8 @@ export async function getAdminResumes(req, res) {
     const search = req.query.search || null;
 
     const { rows, count } = await findResumes({ page, limit, search });
-    return sendSuccess(res, 'Resumes fetched successfully', { data: rows, page, limit, total: count });
+    const resumes = await Promise.all(rows.map(withFreshPreview));
+    return sendSuccess(res, 'Resumes fetched successfully', { data: resumes, page, limit, total: count });
 }
 
 export async function getAdminResume(req, res) {
@@ -113,7 +146,7 @@ export async function getAdminResume(req, res) {
         throw error;
     }
 
-    return sendSuccess(res, 'Resume fetched successfully', resume);
+    return sendSuccess(res, 'Resume fetched successfully', await withFreshPreview(resume));
 }
 
 export async function updateResume(req, res) {

@@ -1,16 +1,20 @@
 import { useEffect, useState } from 'react';
 
-function useTypedText(words, typeSpeed = 100, backSpeed = 70, pause = 1000) {
+function useTypedText(words = [], typeSpeed = 100, backSpeed = 70, pause = 1000) {
   const [text, setText] = useState('');
 
   useEffect(() => {
+    if (!words.length) {
+      setText('');
+      return undefined;
+    }
     let wordIndex = 0;
     let charIndex = 0;
     let deleting = false;
     let timeoutId;
 
     const tick = () => {
-      const currentWord = words[wordIndex];
+      const currentWord = words[wordIndex] || '';
 
       if (deleting) {
         charIndex -= 1;

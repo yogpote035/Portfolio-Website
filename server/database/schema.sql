@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS profile (
   name VARCHAR(160) NOT NULL,
   designation VARCHAR(160) NOT NULL,
   cover_photo_media_id BIGINT UNSIGNED NULL,
+  about_image_media_id BIGINT UNSIGNED NULL,
   about TEXT NULL,
   email VARCHAR(160) NULL,
   phone VARCHAR(40) NULL,
@@ -51,7 +52,9 @@ CREATE TABLE IF NOT EXISTS profile (
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT fk_profile_cover_media
-    FOREIGN KEY (cover_photo_media_id) REFERENCES media(id) ON DELETE SET NULL
+    FOREIGN KEY (cover_photo_media_id) REFERENCES media(id) ON DELETE SET NULL,
+  CONSTRAINT fk_profile_about_media
+    FOREIGN KEY (about_image_media_id) REFERENCES media(id) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS social_links (

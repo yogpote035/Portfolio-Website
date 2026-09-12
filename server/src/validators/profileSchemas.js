@@ -18,6 +18,7 @@ export const profileUpdateSchema = z.object({
         name: z.string().min(1),
         designation: z.string().min(1),
         cover_photo_media_id: z.number().int().positive().nullable().optional(),
+        about_image_media_id: z.number().int().positive().nullable().optional(),
         about: z.string().nullable().optional(),
         email: z.string().email().nullable().optional(),
         phone: z.string().nullable().optional(),

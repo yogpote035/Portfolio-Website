@@ -15,9 +15,10 @@ function EducationSection() {
   return (
     <section className="education-section" id="education">
       <div className="section-intro">
-        <SectionTitle accent="Education">Academic</SectionTitle>
+        <SectionTitle accent="foundation" index="04">Academic</SectionTitle>
       </div>
       <motion.div className="education-card" initial="hidden" variants={fadeUp} viewport={viewport} whileInView="visible">
+        <span className="education-number">BSC / CS</span>
         <div>
           <span className="eyebrow">{educationData.duration}</span>
           <h3>{educationData.degree}</h3>

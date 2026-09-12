@@ -5,13 +5,14 @@ function ScrollToTop() {
   const { pathname, hash } = useLocation();
 
   useEffect(() => {
+    const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
     if (hash) {
       const target = document.querySelector(hash);
-      target?.scrollIntoView({ behavior: 'smooth' });
+      target?.scrollIntoView({ behavior });
       return;
     }
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior });
   }, [pathname, hash]);
 
   return null;

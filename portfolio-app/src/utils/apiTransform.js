@@ -93,6 +93,7 @@ export function normalizeProfile(apiProfile = {}, fallbackProfile = {}, fallback
         socials,
         stats: finalStats,
         heroImage: apiProfile.coverPhotoUrl || fallbackProfile.heroImage,
+        aboutImage: apiProfile.aboutImageUrl || fallbackProfile.aboutImage,
     };
 }
 
@@ -126,6 +127,7 @@ export function normalizeExperiences(experiences = []) {
         duration: formatExperienceDuration(item.start_date, item.end_date, item.current_company),
         location: item.location || '',
         responsibilities: parseJsonList(item.responsibilities),
+        technologies: parseJsonList(item.technologies).map((tech) => typeof tech === 'string' ? tech : tech?.name).filter(Boolean),
     }));
 }
 
@@ -179,6 +181,10 @@ export function normalizeProjectList(projects = [], fallbackProjects = []) {
             role: item.role || fallback?.role || '',
             futureImprovements: pickList(parseJsonList(item.future_improvements), fallback?.futureImprovements || []),
             note: item.note || fallback?.note || '',
+            status: item.status || fallback?.status || 'completed',
+            featured: Boolean(item.featured ?? fallback?.featured),
+            companyProject: Boolean(item.company_project ?? fallback?.companyProject),
+            responsibilities: pickList(parseJsonList(item.responsibilities), fallback?.responsibilities || []),
         };
     });
 }

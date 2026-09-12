@@ -101,6 +101,10 @@ async function applyIncrementalMigrations(connection) {
     ]) {
         await dropColumnIfPresent(connection, 'profile', columnName);
     }
+    if (!(await columnExists(connection, 'profile', 'about_image_media_id'))) {
+        await connection.query(`ALTER TABLE profile ADD COLUMN about_image_media_id BIGINT UNSIGNED NULL AFTER cover_photo_media_id`);
+        await connection.query(`ALTER TABLE profile ADD CONSTRAINT fk_profile_about_media FOREIGN KEY (about_image_media_id) REFERENCES media(id) ON DELETE SET NULL`);
+    }
     if (!(await columnExists(connection, 'contacts', 'status'))) {
         await connection.query(
             `ALTER TABLE contacts

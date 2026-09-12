@@ -15,22 +15,23 @@ function ExperienceSection() {
   return (
     <section className="experience-section" id="experience">
       <div className="section-intro">
-        <SectionTitle accent="Experience">Professional</SectionTitle>
+        <SectionTitle accent="journey" index="03">Professional</SectionTitle>
         <p>
           Internship experience building real-world ERP and HRMS modules with React,
           Redux Toolkit, secure authentication, REST APIs, and collaborative delivery.
         </p>
       </div>
       <motion.div className="experience-timeline" initial="hidden" variants={staggerContainer} viewport={viewport} whileInView="visible">
-        {experienceItems.map((item) => (
+        {experienceItems.map((item, index) => (
           <motion.article className="experience-card" key={`${item.company}-${item.role}`} variants={fadeUp}>
-            <div className="timeline-dot" />
+            <div className="timeline-dot">{String(index + 1).padStart(2, '0')}</div>
             <div className="experience-meta">
               <span>{item.duration}</span>
               <span>{item.location}</span>
             </div>
             <h3>{item.role}</h3>
             <h4>{item.company}</h4>
+            {item.technologies?.length > 0 && <div className="tech-stack">{item.technologies.map((tech) => <span key={tech}>{tech}</span>)}</div>}
             <ul>
               {item.responsibilities.map((responsibility) => (
                 <li key={responsibility}>{responsibility}</li>

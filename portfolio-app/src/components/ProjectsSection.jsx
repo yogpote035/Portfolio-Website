@@ -18,19 +18,19 @@ function ProjectsSection() {
     <section className="portfolio" id="portfolio">
       <div className="section-heading-row">
         <div>
-          <SectionTitle accent="Projects">Featured</SectionTitle>
+          <SectionTitle accent="work" index="05">Selected</SectionTitle>
           <p className="section-subtitle">
             Case-study style builds focused on secure full-stack workflows,
             responsive interfaces, and production-ready React architecture.
           </p>
         </div>
         <Link className="text-link" to="/projects">
-          View all projects
+          View the archive <i className="bx bx-right-arrow-alt" />
         </Link>
       </div>
       <motion.div className="portfolio-content" initial="hidden" variants={staggerContainer} viewport={viewport} whileInView="visible">
-        {projectItems.map((project) => (
-          <ProjectCard key={project.slug} project={project} />
+        {projectItems.slice(0, 4).map((project, index) => (
+          <div className={`featured-project ${index % 2 ? 'is-reversed' : ''}`} key={project.slug}><span className="project-number">0{index + 1}</span><ProjectCard project={project} /></div>
         ))}
       </motion.div>
     </section>

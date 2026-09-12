@@ -15,6 +15,33 @@ function getSupabaseClient() {
     });
 }
 
+function getStorageFileKey(storagePath) {
+    const bucket = env.supabase.resumeBucket;
+    let value = String(storagePath || '').trim();
+
+    try {
+        if (/^https?:\/\//i.test(value)) {
+            const pathname = decodeURIComponent(new URL(value).pathname);
+            const markers = [
+                `/storage/v1/object/sign/${bucket}/`,
+                `/storage/v1/object/public/${bucket}/`,
+                `/storage/v1/object/${bucket}/`,
+            ];
+            const marker = markers.find((item) => pathname.includes(item));
+            value = marker ? pathname.split(marker)[1] : pathname;
+        }
+    } catch {
+        // Continue with the stored value; Supabase will return a useful storage error.
+    }
+
+    value = value.replace(/^\/+/, '');
+    while (value.startsWith(`${bucket}/`)) {
+        value = value.slice(bucket.length + 1);
+    }
+
+    return value;
+}
+
 export async function uploadResume(file) {
     validateResumeFile(file);
     const supabase = getSupabaseClient();
@@ -54,7 +81,7 @@ export async function deleteResume(storagePath) {
     }
 
     const supabase = getSupabaseClient();
-    const fileKey = storagePath.replace(new RegExp(`^${env.supabase.resumeBucket}/?`), '');
+    const fileKey = getStorageFileKey(storagePath);
     const { error } = await supabase.storage.from(env.supabase.resumeBucket).remove([fileKey]);
 
     if (error) {
@@ -72,14 +99,21 @@ export async function getResumeUrl(storagePath, expiresInSeconds = 60 * 60 * 24)
     }
 
     const supabase = getSupabaseClient();
-    const fileKey = storagePath.replace(new RegExp(`^${env.supabase.resumeBucket}/?`), '');
+    const fileKey = getStorageFileKey(storagePath);
+    if (!fileKey) {
+        const err = new Error('Resume storage path is invalid');
+        err.statusCode = 422;
+        throw err;
+    }
     const { data, error } = await supabase.storage
         .from(env.supabase.resumeBucket)
         .createSignedUrl(fileKey, expiresInSeconds);
 
-    if (error) {
-        const err = new Error('Failed to generate resume preview URL');
+    if (error || !data?.signedUrl) {
+        const err = new Error(`Failed to generate resume preview URL${error?.message ? `: ${error.message}` : ''}`);
         err.statusCode = 500;
+        err.code = 'RESUME_PREVIEW_UNAVAILABLE';
+        err.storageError = error?.message || 'Signed URL was not returned';
         throw err;
     }
 

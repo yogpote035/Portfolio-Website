@@ -1,0 +1,10 @@
+{
+  "name": "Yogesh Pote Portfolio",
+  "short_name": "YP Portfolio",
+  "description": "MERN Stack Developer portfolio and project case studies.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f3ef",
+  "theme_color": "#121713",
+  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

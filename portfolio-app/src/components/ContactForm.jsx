@@ -2,6 +2,8 @@ import { useState } from 'react';
 import SectionTitle from './SectionTitle.jsx';
 import { apiBase } from '../utils/apiClient.js';
 import { parseValidationErrors } from '../utils/errorHelpers.js';
+import SocialLinks from './SocialLinks.jsx';
+import { useProfile } from '../context/ProfileContext.jsx';
 
 const initialForm = {
   name: '',
@@ -16,6 +18,7 @@ function isValidEmail(value) {
 }
 
 function ContactForm() {
+  const { profileData } = useProfile();
   const [formData, setFormData] = useState(initialForm);
   const [status, setStatus] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
@@ -100,8 +103,15 @@ function ContactForm() {
 
   return (
     <section className="contact" id="contact">
+      <div className="contact-intro" data-reveal>
+        <span className="section-index">06</span>
+        <p className="eyebrow">Have a project or opportunity?</p>
+        <h2>Let&apos;s make something<br /><em>worth remembering.</em></h2>
+        <a className="contact-email" href={`mailto:${profileData.email}`}>{profileData.email} <i className="bx bx-up-arrow-alt" /></a>
+        <SocialLinks socials={profileData.socials || []} />
+      </div>
       <form onSubmit={handleSubmit} className="contact-form" data-reveal>
-        <SectionTitle accent="Developer">Contact</SectionTitle>
+        <SectionTitle accent="a note">Send</SectionTitle>
         <div className="contact-form-grid">
           <div className="contact-input-wrapper">
             <label htmlFor="name">
@@ -193,9 +203,9 @@ function ContactForm() {
 
         <div className="contact-form-actions">
           <button className="btn" type="submit" disabled={loading}>
-            {loading ? 'Sending message...' : 'Send Message'}
+            {loading ? 'Sending...' : <>Send message <i className="bx bx-right-arrow-alt" /></>}
           </button>
-          {status && <p className="form-status">{status}</p>}
+          {status && <p className={`form-status ${status.includes('success') ? 'is-success' : ''}`} role="status">{status}</p>}
         </div>
       </form>
     </section>

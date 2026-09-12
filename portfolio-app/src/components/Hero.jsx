@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { profile } from '../data/profile.js';
-import { fetchApi } from '../utils/apiClient.js';
+import { apiBase, fetchApi } from '../utils/apiClient.js';
 import useTypedText from '../hooks/useTypedText.js';
 import { fadeUp, staggerContainer, viewport } from '../utils/animations.js';
 import Button from './Button.jsx';
@@ -24,7 +24,7 @@ function Hero() {
       try {
         const data = await fetchApi('/api/resume?redirect=false');
         if (!canceled && data?.url) {
-          setResumeLink(data.url);
+          setResumeLink(`${apiBase}/api/resume`);
         }
       } catch {
         if (!canceled) {

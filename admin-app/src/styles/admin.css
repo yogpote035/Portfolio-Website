@@ -1069,6 +1069,30 @@ td small {
   color: var(--muted);
   font-size: 12px;
 }
+.cms-field-help-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.cms-inline-action {
+  flex: 0 0 auto;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--primary);
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+.cms-inline-action:hover:not(:disabled) {
+  text-decoration: underline;
+}
+.cms-inline-action:disabled {
+  color: var(--muted);
+  cursor: not-allowed;
+  opacity: 0.65;
+}
 .admin-form,
 .project-form,
 .admin-login-card form {

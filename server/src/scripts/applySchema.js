@@ -63,6 +63,18 @@ async function foreignKeyExists(connection, tableName, constraintName) {
     return Number(rows[0]?.count || 0) > 0;
 }
 
+async function indexExists(connection, tableName, indexName) {
+    const [rows] = await connection.execute(
+        `SELECT COUNT(*) AS count
+         FROM INFORMATION_SCHEMA.STATISTICS
+         WHERE TABLE_SCHEMA = DATABASE()
+           AND TABLE_NAME = ?
+           AND INDEX_NAME = ?`,
+        [tableName, indexName],
+    );
+    return Number(rows[0]?.count || 0) > 0;
+}
+
 async function dropForeignKeyIfPresent(connection, tableName, constraintName) {
     if (await foreignKeyExists(connection, tableName, constraintName)) {
         await connection.query(`ALTER TABLE ${tableName} DROP FOREIGN KEY ${constraintName}`);
@@ -131,6 +143,24 @@ async function applyIncrementalMigrations(connection) {
             `ALTER TABLE projects
        ADD COLUMN subtitle VARCHAR(255) NULL AFTER full_description`,
         );
+    }
+
+    if (!(await columnExists(connection, 'projects', 'project_type'))) {
+        await connection.query(
+            `ALTER TABLE projects
+       ADD COLUMN project_type ENUM('personal', 'company', 'freelance') NOT NULL DEFAULT 'personal' AFTER featured`,
+        );
+    }
+
+    if (await columnExists(connection, 'projects', 'company_project')) {
+        await connection.query(
+            `UPDATE projects SET project_type = CASE WHEN company_project = TRUE THEN 'company' ELSE 'personal' END`,
+        );
+        await connection.query(`ALTER TABLE projects DROP COLUMN company_project`);
+    }
+
+    if (!(await indexExists(connection, 'projects', 'idx_projects_type'))) {
+        await connection.query(`CREATE INDEX idx_projects_type ON projects (project_type)`);
     }
 
     await connection.query(

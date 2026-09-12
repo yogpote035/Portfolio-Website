@@ -33,7 +33,7 @@ const projectBodySchema = z.object({
     github_url: urlSchema,
     live_url: urlSchema,
     featured: booleanSchema.optional(),
-    company_project: booleanSchema.optional(),
+    project_type: z.enum(['personal', 'company', 'freelance']).optional(),
     status: z.enum(['planned', 'in_progress', 'completed', 'archived']).optional(),
     completion_date: completionDateSchema,
     display_order: z.number().int().positive().optional(),

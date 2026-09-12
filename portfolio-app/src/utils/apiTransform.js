@@ -183,7 +183,8 @@ export function normalizeProjectList(projects = [], fallbackProjects = []) {
             note: item.note || fallback?.note || '',
             status: item.status || fallback?.status || 'completed',
             featured: Boolean(item.featured ?? fallback?.featured),
-            companyProject: Boolean(item.company_project ?? fallback?.companyProject),
+            projectType: item.project_type || (item.company_project ? 'company' : fallback?.projectType || (fallback?.companyProject ? 'company' : 'personal')),
+            companyProject: (item.project_type || (item.company_project ? 'company' : 'personal')) === 'company',
             responsibilities: pickList(parseJsonList(item.responsibilities), fallback?.responsibilities || []),
         };
     });

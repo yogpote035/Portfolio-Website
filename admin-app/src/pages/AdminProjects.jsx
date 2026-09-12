@@ -34,7 +34,7 @@ const initialForm = {
   github_url: "",
   live_url: "",
   featured: false,
-  company_project: false,
+  project_type: "personal",
   status: "planned",
   completion_date: "",
   display_order: 1,
@@ -52,6 +52,16 @@ const statusLabels = {
   planned: "Planned",
   archived: "Archived",
 };
+
+const projectTypeOptions = [
+  { value: "personal", label: "Personal project" },
+  { value: "company", label: "Company project" },
+  { value: "freelance", label: "Freelance project" },
+];
+
+const projectTypeLabels = Object.fromEntries(
+  projectTypeOptions.map((option) => [option.value, option.label]),
+);
 
 function listToText(value) {
   if (!value) {
@@ -175,6 +185,7 @@ function AdminProjects() {
   const [projects, setProjects] = useState([]);
   const [skills, setSkills] = useState([]);
   const [form, setForm] = useState(initialForm);
+  const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
   const [coverFile, setCoverFile] = useState(null);
   const [galleryFiles, setGalleryFiles] = useState([]);
   const [coverPreview, setCoverPreview] = useState("");
@@ -253,6 +264,7 @@ function AdminProjects() {
       clearGalleryBlobUrls();
       setEditingProjectId(null);
       setForm(initialForm);
+      setSlugManuallyEdited(false);
       setCoverFile(null);
       setGalleryFiles([]);
       setCoverPreview("");
@@ -305,7 +317,7 @@ function AdminProjects() {
 
   const handleFieldChange = (field) => (event) => {
     const value =
-      field === "featured" || field === "company_project"
+      field === "featured"
         ? event.target.checked
         : event.target.value;
 
@@ -318,6 +330,35 @@ function AdminProjects() {
       ...current,
       [field]: undefined,
     }));
+    setError(null);
+  };
+
+  const handleNameChange = (event) => {
+    const name = event.target.value;
+    setForm((current) => ({
+      ...current,
+      name,
+      slug: slugManuallyEdited ? current.slug : normalizeSlug(name),
+    }));
+    setValidationErrors((current) => ({
+      ...current,
+      name: undefined,
+      ...(!slugManuallyEdited ? { slug: undefined } : {}),
+    }));
+    setError(null);
+  };
+
+  const handleSlugChange = (event) => {
+    setSlugManuallyEdited(true);
+    setForm((current) => ({ ...current, slug: event.target.value }));
+    setValidationErrors((current) => ({ ...current, slug: undefined }));
+    setError(null);
+  };
+
+  const regenerateSlug = () => {
+    setSlugManuallyEdited(false);
+    setForm((current) => ({ ...current, slug: normalizeSlug(current.name) }));
+    setValidationErrors((current) => ({ ...current, slug: undefined }));
     setError(null);
   };
 
@@ -352,6 +393,7 @@ function AdminProjects() {
     clearCoverBlobUrl();
     clearGalleryBlobUrls();
     setEditingProjectId(project.id);
+    setSlugManuallyEdited(true);
     setForm({
       name: project.name || "",
       slug: project.slug || "",
@@ -361,7 +403,8 @@ function AdminProjects() {
       github_url: project.github_url || "",
       live_url: project.live_url || "",
       featured: Boolean(project.featured),
-      company_project: Boolean(project.company_project),
+      project_type:
+        project.project_type || (project.company_project ? "company" : "personal"),
       status: project.status || "planned",
       completion_date: formatDateInput(project.completion_date),
       display_order: project.display_order ?? 1,
@@ -386,6 +429,7 @@ function AdminProjects() {
     clearGalleryBlobUrls();
     setEditingProjectId(null);
     setForm(initialForm);
+    setSlugManuallyEdited(false);
     setCoverFile(null);
     setGalleryFiles([]);
     setCoverPreview("");
@@ -503,6 +547,10 @@ function AdminProjects() {
       errors.full_description = "Full description is required.";
     }
 
+    if (!projectTypeLabels[values.project_type]) {
+      errors.project_type = "Select a valid project type.";
+    }
+
     if (values.github_url && !isValidUrl(values.github_url)) {
       errors.github_url = "GitHub URL must be a valid URL.";
     }
@@ -543,7 +591,7 @@ function AdminProjects() {
 
       requestBody.slug = normalizedSlug;
       requestBody.featured = Boolean(requestBody.featured);
-      requestBody.company_project = Boolean(requestBody.company_project);
+      requestBody.project_type = requestBody.project_type || "personal";
       requestBody.subtitle = requestBody.subtitle?.trim() || null;
       requestBody.github_url = requestBody.github_url || null;
       requestBody.live_url = requestBody.live_url || null;
@@ -611,6 +659,7 @@ function AdminProjects() {
       clearCoverBlobUrl();
       clearGalleryBlobUrls();
       setForm(initialForm);
+      setSlugManuallyEdited(false);
       setCoverFile(null);
       setGalleryFiles([]);
       setCoverPreview("");
@@ -771,9 +820,10 @@ function AdminProjects() {
               <p>Slug: {selectedProject.slug}</p>
               <p>Display order: {selectedProject.display_order ?? 1}</p>
               <p>
-                {selectedProject.company_project
-                  ? "Company project"
-                  : "Personal project"}
+                {projectTypeLabels[
+                  selectedProject.project_type ||
+                    (selectedProject.company_project ? "company" : "personal")
+                ] || "Personal project"}
               </p>
             </div>
           </div>
@@ -823,7 +873,7 @@ function AdminProjects() {
                   <input
                     type="text"
                     value={form.name}
-                    onChange={handleFieldChange("name")}
+                    onChange={handleNameChange}
                     required
                   />
                   {validationErrors.name && (
@@ -837,9 +887,27 @@ function AdminProjects() {
                   <input
                     type="text"
                     value={form.slug}
-                    onChange={handleFieldChange("slug")}
+                    onChange={handleSlugChange}
+                    onBlur={(event) => {
+                      const slug = normalizeSlug(event.target.value);
+                      setForm((current) => ({ ...current, slug }));
+                    }}
+                    placeholder="project-name"
                     required
                   />
+                  <span className="cms-field-help-row">
+                    <span className="admin-help-text">
+                      Suggested from the name. You can enter a custom slug.
+                    </span>
+                    <button
+                      type="button"
+                      className="cms-inline-action"
+                      onClick={regenerateSlug}
+                      disabled={!form.name.trim()}
+                    >
+                      Regenerate
+                    </button>
+                  </span>
                   {validationErrors.slug && (
                     <span className="admin-field-error">
                       {validationErrors.slug}
@@ -899,16 +967,29 @@ function AdminProjects() {
                     </span>
                   )}
                 </FormField>
-                <FormField className="checkbox-label">
-                  <input
-                    type="checkbox"
-                    checked={form.company_project}
-                    onChange={handleFieldChange("company_project")}
+                <FormField required>
+                  Project type
+                  <SearchableSelect
+                    required
+                    invalid={Boolean(validationErrors.project_type)}
+                    ariaLabel="Project type"
+                    value={form.project_type || "personal"}
+                    onChange={(value) => {
+                      setForm((current) => ({
+                        ...current,
+                        project_type: value,
+                      }));
+                      setValidationErrors((current) => ({
+                        ...current,
+                        project_type: undefined,
+                      }));
+                    }}
+                    options={projectTypeOptions}
+                    searchPlaceholder="Search project types..."
                   />
-                  Company project
-                  {validationErrors.company_project && (
+                  {validationErrors.project_type && (
                     <span className="admin-field-error">
-                      {validationErrors.company_project}
+                      {validationErrors.project_type}
                     </span>
                   )}
                 </FormField>

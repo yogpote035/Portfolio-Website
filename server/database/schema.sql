@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS projects (
   github_url VARCHAR(255) NULL,
   live_url VARCHAR(255) NULL,
   featured BOOLEAN NOT NULL DEFAULT FALSE,
-  company_project BOOLEAN NOT NULL DEFAULT FALSE,
+  project_type ENUM('personal', 'company', 'freelance') NOT NULL DEFAULT 'personal',
   status ENUM('planned', 'in_progress', 'completed', 'archived') NOT NULL DEFAULT 'completed',
   completion_date DATE NULL,
   display_order INT NOT NULL DEFAULT 1,
@@ -133,6 +133,7 @@ CREATE TABLE IF NOT EXISTS projects (
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_projects_featured_order (featured, display_order),
+  INDEX idx_projects_type (project_type),
   INDEX idx_projects_status (status)
 );
 

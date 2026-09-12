@@ -48,7 +48,9 @@ function Hero() {
         viewport={viewport}
         whileInView="visible"
       >
-        <motion.div className="availability" variants={fadeUp}><span /> Available for full-time opportunities</motion.div>
+        <motion.div className="availability" variants={fadeUp}>
+          <span /> Available for freelance projects &amp; full-time roles
+        </motion.div>
         <motion.p className="hero-kicker" variants={fadeUp}>{profileData.title} · Pune, India</motion.p>
         <h1 id="hero-title">I build digital products<br />that <em>work beautifully.</em></h1>
         <motion.h2 variants={fadeUp}>

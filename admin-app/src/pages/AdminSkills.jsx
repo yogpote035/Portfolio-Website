@@ -19,6 +19,7 @@ import { parseValidationErrors } from "../utils/errorHelpers.js";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import ImageUploadField from "../components/ImageUploadField.jsx";
 import LoadingOverlay from "../components/LoadingOverlay.jsx";
+import SearchableSelect from "../components/SearchableSelect.jsx";
 
 const skillCategories = [
   "frontend",
@@ -193,7 +194,8 @@ function AdminSkills() {
     setSaving(true);
 
     try {
-      const { logoPreviewUrl, ...payload } = form;
+      const payload = { ...form };
+      delete payload.logoPreviewUrl;
       const path = editingSkillId
         ? `/api/admin/skills/${editingSkillId}`
         : "/api/admin/skills";
@@ -404,18 +406,9 @@ function AdminSkills() {
                     </span>
                   )}
                 </FormField>
-                <FormField>
+                <FormField required>
                   Category
-                  <select
-                    value={form.category}
-                    onChange={handleFieldChange("category")}
-                  >
-                    {skillCategories.map((category) => (
-                      <option key={category} value={category}>
-                        {category}
-                      </option>
-                    ))}
-                  </select>
+                  <SearchableSelect required invalid={Boolean(validationErrors.category)} ariaLabel="Skill category" value={form.category} onChange={(value) => { setForm((current) => ({ ...current, category: value })); setValidationErrors((current) => ({ ...current, category: undefined })); }} options={skillCategories.map((category) => ({ value: category, label: category }))} />
                   {validationErrors.category && (
                     <span className="admin-field-error">
                       {validationErrors.category}
@@ -529,17 +522,7 @@ function AdminSkills() {
           <div className="admin-filter-row">
             <FormField>
               Category
-              <select
-                value={categoryFilter}
-                onChange={(e) => setCategoryFilter(e.target.value)}
-              >
-                <option value="all">All categories</option>
-                {orderedCategories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
+              <SearchableSelect ariaLabel="Filter by category" value={categoryFilter} onChange={setCategoryFilter} options={[{ value: 'all', label: 'All categories' }, ...orderedCategories.map((category) => ({ value: category, label: category }))]} />
             </FormField>
           </div>
           <DataTable

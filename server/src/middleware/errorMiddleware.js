@@ -4,7 +4,7 @@ export function notFound(req, res) {
   return sendError(res, `Route not found: ${req.originalUrl}`, 404);
 }
 
-export function errorMiddleware(error, req, res, next) {
+export function errorMiddleware(error, req, res, _next) {
   let statusCode = error.statusCode || 500;
   let message = error.message;
 
@@ -16,8 +16,19 @@ export function errorMiddleware(error, req, res, next) {
         : 'Invalid file upload request';
   }
 
-  if (process.env.NODE_ENV !== 'test' && statusCode >= 500) {
-    console.error(error);
+  if (process.env.NODE_ENV !== 'test') {
+    const details = {
+      method: req.method,
+      path: req.originalUrl,
+      statusCode,
+      code: error.code,
+      message,
+    };
+    if (statusCode >= 500) {
+      console.error('Request failed', details, error);
+    } else if (statusCode === 401 || statusCode === 403 || statusCode === 429) {
+      console.warn('Request rejected', details);
+    }
   }
 
   return sendError(

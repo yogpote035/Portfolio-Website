@@ -7,6 +7,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { logout } from "../utils/authClient.js";
+import { fetchApi } from "../utils/apiClient.js";
 import { Button, Icon } from "./ui.jsx";
 const groups = [
   ["Overview", [["Dashboard", "/", "dashboard"]]],
@@ -30,6 +31,7 @@ export default function AdminLayout() {
     () => localStorage.getItem("cms-sidebar") === "collapsed",
   );
   const [open, setOpen] = useState(false);
+  const [heroImageUrl, setHeroImageUrl] = useState("");
   const [theme, setTheme] = useState(
     () =>
       localStorage.getItem("cms-theme") ||
@@ -45,6 +47,19 @@ export default function AdminLayout() {
     document.documentElement.dataset.theme = theme;
     localStorage.setItem("cms-theme", theme);
   }, [theme]);
+  useEffect(() => {
+    let active = true;
+    fetchApi("/api/profile")
+      .then((data) => {
+        if (active) setHeroImageUrl(data?.coverPhotoUrl || "");
+      })
+      .catch(() => {
+        if (active) setHeroImageUrl("");
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
   useEffect(() => {
     setOpen(false);
     window.scrollTo(0, 0);
@@ -75,7 +90,11 @@ export default function AdminLayout() {
     <>
       <Link className="admin-brand" to="/" aria-label="Portfolio CMS dashboard">
         <span className="admin-brand-mark">
-          p<span>·</span>
+          {heroImageUrl ? (
+            <img src={heroImageUrl} alt="" onError={() => setHeroImageUrl("")} />
+          ) : (
+            <>p<span>·</span></>
+          )}
         </span>
         <span className="cms-nav-label">
           <strong>Portfolio</strong>

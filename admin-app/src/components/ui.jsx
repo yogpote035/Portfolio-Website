@@ -29,6 +29,7 @@ const paths = {
   plus: "M12 5v14 M5 12h14",
   activity: "M3 12h4l3-8 4 16 3-8h4",
   search: "M10 3a7 7 0 1 0 0 14 7 7 0 0 0 0-14 m5 12 6 6",
+  chevron: "m7 10 5 5 5-5",
   warning: "m12 3 10 18H2z M12 9v5 M12 17v1",
 };
 export function Icon({ name = "projects", size = 18, ...props }) {
@@ -235,20 +236,36 @@ export function DataTable({
     </div>
   );
 }
-export function FormField({ children, ...props }) {
+export function FormField({ children, required: requiredProp = false, ...props }) {
   const id = useId();
   const parts = Children.toArray(children);
+  const required =
+    requiredProp ||
+    parts.some(
+      (child) => isValidElement(child) && Boolean(child.props.required),
+    );
   const error = parts.find(
     (child) =>
       isValidElement(child) && child.props.className?.includes("field-error"),
   );
   return (
-    <label {...props}>
-      {parts.map((child) => {
-        if (!isValidElement(child)) return child;
+    <label {...props} className={`${props.className || ""}${required ? " is-required" : ""}`.trim()}>
+      {parts.map((child, index) => {
+        if (!isValidElement(child)) {
+          if (required && index === 0 && typeof child === "string") {
+            return (
+              <span className="cms-field-label" key={`${id}-label`}>
+                {child}
+                <span className="cms-required-mark" aria-hidden="true">*</span>
+              </span>
+            );
+          }
+          return child;
+        }
         if (["input", "select", "textarea"].includes(child.type))
           return cloneElement(child, {
             id: child.props.id || id,
+            "aria-required": required || undefined,
             "aria-invalid": error ? true : undefined,
             "aria-describedby": error
               ? `${id}-error`

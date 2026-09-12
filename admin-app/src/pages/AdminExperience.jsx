@@ -159,7 +159,8 @@ function AdminExperience() {
     setValidationErrors({});
 
     try {
-      const { companyLogoPreviewUrl, ...formPayload } = form;
+      const formPayload = { ...form };
+      delete formPayload.companyLogoPreviewUrl;
       const path = editingExperienceId
         ? `/api/admin/experience/${editingExperienceId}`
         : "/api/admin/experience";

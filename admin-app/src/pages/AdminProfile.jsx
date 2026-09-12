@@ -151,7 +151,9 @@ function AdminProfile() {
     setError(null);
 
     try {
-      const { coverPhotoUrl, aboutImageUrl, ...profilePayload } = profile;
+      const profilePayload = { ...profile };
+      delete profilePayload.coverPhotoUrl;
+      delete profilePayload.aboutImageUrl;
       await fetchApiAuth("/api/admin/profile", {
         method: "PUT",
         body: JSON.stringify({

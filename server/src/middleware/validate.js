@@ -29,7 +29,7 @@ export const validate = (schema) => (req, res, next) => {
         query: summarize(req.query),
         issues: result.error.issues,
       });
-    } catch (e) {
+    } catch {
       // Swallow logging errors to avoid masking original validation error
     }
 

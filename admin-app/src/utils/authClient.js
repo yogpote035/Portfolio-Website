@@ -30,10 +30,15 @@ export function isAuthenticated() {
     return Boolean(getAccessToken());
 }
 
-function isTokenExpiring(token, bufferSeconds = 30) {
+export function isTokenExpiring(token, bufferSeconds = 30, now = Date.now()) {
     try {
-        const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
-        return !payload.exp || payload.exp * 1000 <= Date.now() + bufferSeconds * 1000;
+        const parts = token.split('.');
+        if (parts.length !== 3 || !parts[1]) return true;
+
+        const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+        const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, '=');
+        const payload = JSON.parse(atob(padded));
+        return !Number.isFinite(payload.exp) || payload.exp * 1000 <= now + bufferSeconds * 1000;
     } catch {
         return true;
     }
@@ -98,7 +103,13 @@ export async function login({ email, password }) {
         body: JSON.stringify({ email, password }),
     });
 
-    const payload = await parseApiResponse(response);
+    let payload;
+    try {
+        payload = await parseApiResponse(response);
+    } catch (error) {
+        clearAuthTokens();
+        throw error;
+    }
 
     if (!response.ok) {
         throw new Error(payload?.message || response.statusText || 'Login failed');
@@ -124,7 +135,13 @@ async function performTokenRefresh() {
         body: JSON.stringify({ refreshToken }),
     });
 
-    const payload = await parseApiResponse(response);
+    let payload;
+    try {
+        payload = await parseApiResponse(response);
+    } catch (error) {
+        clearAuthTokens();
+        throw error;
+    }
 
     if (!response.ok || !payload.success) {
         clearAuthTokens();
@@ -195,7 +212,13 @@ export async function fetchApiAuth(path, options = {}) {
             headers: buildAuthHeaders(token, options.headers, isFormData),
         });
 
-        const retryPayload = await parseApiResponse(retryResponse);
+        let retryPayload;
+        try {
+            retryPayload = await parseApiResponse(retryResponse);
+        } catch (error) {
+            if (retryResponse.status === 401) clearAuthTokens();
+            throw error;
+        }
         return retryPayload.data;
     }
 

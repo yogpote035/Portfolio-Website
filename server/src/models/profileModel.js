@@ -16,7 +16,7 @@ export async function findProfile() {
 }
 
 export async function createProfile(profileData) {
-    const [result] = await pool.execute(
+    await pool.execute(
         `INSERT INTO profile (
       name,
       designation,

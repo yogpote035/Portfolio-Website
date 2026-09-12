@@ -1,10 +1,48 @@
 import { useId, useRef, useState } from "react";
 import { Icon } from "./ui.jsx";
 
+const ALLOWED_IMAGE_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "image/svg+xml",
+]);
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+const IMAGE_TYPE_BY_EXTENSION = {
+  jpg: "image/jpeg",
+  jpeg: "image/jpeg",
+  png: "image/png",
+  webp: "image/webp",
+  gif: "image/gif",
+  svg: "image/svg+xml",
+};
+
+function normalizeImageFile(file) {
+  if (!file) return null;
+  if (ALLOWED_IMAGE_TYPES.has(file.type)) return file;
+  const extension = file.name?.split(".").pop()?.toLowerCase();
+  const inferredType = file.type ? "" : IMAGE_TYPE_BY_EXTENSION[extension];
+  return inferredType
+    ? new File([file], file.name, { type: inferredType, lastModified: file.lastModified })
+    : null;
+}
+
 function extractImages(items) {
   return Array.from(items || [])
     .map((item) => (item.kind === "file" ? item.getAsFile() : item))
-    .filter((file) => file?.type?.startsWith("image/"));
+    .map(normalizeImageFile)
+    .filter(Boolean);
+}
+
+function validateImages(files) {
+  const supplied = Array.from(files || []);
+  const valid = extractImages(supplied).filter((file) => file.size <= MAX_IMAGE_SIZE);
+  if (valid.length === supplied.length) return { valid, error: "" };
+  if (supplied.some((file) => file?.size > MAX_IMAGE_SIZE)) {
+    return { valid, error: "Images must be 5 MB or smaller." };
+  }
+  return { valid, error: "Use a JPG, PNG, WebP, GIF, or SVG image." };
 }
 
 function extractImageUrl(dataTransfer) {
@@ -32,8 +70,10 @@ async function imageFileFromUrl(url) {
   if (!response.ok)
     throw new Error(`Image request failed (${response.status}).`);
   const blob = await response.blob();
-  if (!blob.type.startsWith("image/"))
-    throw new Error("The URL is not an image.");
+  if (!ALLOWED_IMAGE_TYPES.has(blob.type))
+    throw new Error("The URL does not return a supported image.");
+  if (blob.size > MAX_IMAGE_SIZE)
+    throw new Error("The remote image is larger than 5 MB.");
   const filename =
     decodeURIComponent(new URL(url).pathname.split("/").pop()) ||
     `pasted-image.${blob.type.split("/")[1] || "jpg"}`;
@@ -55,11 +95,12 @@ export default function ImageDropZone({
 
   const submit = (files) => {
     const supplied = Array.from(files || []);
-    const images = extractImages(files);
-    if (images.length) {
-      onFiles(multiple ? images : images.slice(0, 1));
-    } else if (supplied.length) {
-      onRejected?.("Only image files are supported.");
+    const { valid, error } = validateImages(supplied);
+    if (valid.length) {
+      onFiles(multiple ? valid : valid.slice(0, 1));
+    }
+    if (error && supplied.length) {
+      onRejected?.(error);
     }
   };
 
@@ -67,10 +108,11 @@ export default function ImageDropZone({
     setImporting(true);
     try {
       onFiles([await imageFileFromUrl(url)]);
-    } catch {
-      onRejected?.(
-        "This image website blocks direct import. Save the image, then drop the downloaded file here, or use Copy image and paste it with Ctrl/⌘ + V.",
-      );
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "";
+      onRejected?.(message.includes("5 MB") || message.includes("supported")
+        ? message
+        : "This website blocks direct image import (CORS). Save the image and drop the file here, or choose Copy image and paste it with Ctrl/⌘ + V.");
     } finally {
       setImporting(false);
     }
@@ -82,23 +124,23 @@ export default function ImageDropZone({
       <div
         className={`admin-image-dropzone${dragging ? " is-dragging" : ""}${disabled || importing ? " is-disabled" : ""}`}
         role="button"
-        tabIndex={disabled ? -1 : 0}
+        tabIndex={disabled || importing ? -1 : 0}
         aria-disabled={disabled || importing}
         aria-describedby={`${inputId}-help`}
-        onClick={() => !disabled && inputRef.current?.click()}
+        onClick={() => !disabled && !importing && inputRef.current?.click()}
         onKeyDown={(event) => {
-          if (!disabled && (event.key === "Enter" || event.key === " ")) {
+          if (!disabled && !importing && (event.key === "Enter" || event.key === " ")) {
             event.preventDefault();
             inputRef.current?.click();
           }
         }}
         onDragEnter={(event) => {
           event.preventDefault();
-          if (!disabled) setDragging(true);
+          if (!disabled && !importing) setDragging(true);
         }}
         onDragOver={(event) => {
           event.preventDefault();
-          if (!disabled) event.dataTransfer.dropEffect = "copy";
+          if (!disabled && !importing) event.dataTransfer.dropEffect = "copy";
         }}
         onDragLeave={(event) => {
           if (!event.currentTarget.contains(event.relatedTarget))
@@ -108,21 +150,26 @@ export default function ImageDropZone({
           event.preventDefault();
           setDragging(false);
           if (disabled || importing) return;
-          const images = extractImages(event.dataTransfer.files);
-          if (images.length) {
-            onFiles(multiple ? images : images.slice(0, 1));
+          const supplied = Array.from(event.dataTransfer.files || []);
+          const validDroppedImages = validateImages(supplied).valid;
+          if (validDroppedImages.length) {
+            submit(supplied);
             return;
           }
           const url = extractImageUrl(event.dataTransfer);
           if (url) importUrl(url);
-          else onRejected?.("Only image files are supported.");
+          else if (supplied.length) submit(supplied);
+          else onRejected?.("Use a JPG, PNG, WebP, GIF, or SVG image.");
         }}
         onPaste={(event) => {
-          if (disabled) return;
-          const images = extractImages(event.clipboardData.items);
-          if (images.length) {
+          if (disabled || importing) return;
+          const clipboardFiles = Array.from(event.clipboardData.items || [])
+            .filter((item) => item.kind === "file")
+            .map((item) => item.getAsFile())
+            .filter(Boolean);
+          if (clipboardFiles.length) {
             event.preventDefault();
-            onFiles(multiple ? images : images.slice(0, 1));
+            submit(clipboardFiles);
           } else {
             const url = extractImageUrl(event.clipboardData);
             if (url) {
@@ -143,9 +190,11 @@ export default function ImageDropZone({
           id={inputId}
           className="admin-upload-native-input"
           type="file"
-          accept="image/*"
+          accept=".jpg,.jpeg,.png,.webp,.gif,.svg,image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
           multiple={multiple}
           disabled={disabled}
+          tabIndex={-1}
+          aria-hidden="true"
           onChange={(event) => {
             submit(event.target.files);
             event.target.value = "";
@@ -168,8 +217,8 @@ export default function ImageDropZone({
         </span>
       </div>
       <span id={`${inputId}-help`} className="admin-help-text">
-        {helperText ||
-          `${multiple ? "Multiple images" : "One image"} · PNG, JPG, WebP, GIF, or another browser-supported image format.`}
+        {helperText ? `${helperText} ` : `${multiple ? "Multiple images" : "One image"}. `}
+        JPG, PNG, WebP, GIF, or SVG · 5 MB maximum each. URL import depends on the source website allowing CORS.
       </span>
     </div>
   );

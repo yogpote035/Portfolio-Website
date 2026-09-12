@@ -2,22 +2,13 @@ import { v2 as cloudinary } from 'cloudinary';
 import { Readable } from 'stream';
 import { nanoid } from 'nanoid';
 import { env } from '../config/env.js';
+import { validateImageFile } from '../utils/fileValidation.js';
 
 cloudinary.config({
     cloud_name: env.cloudinary.cloudName,
     api_key: env.cloudinary.apiKey,
     api_secret: env.cloudinary.apiSecret,
 });
-
-const ALLOWED_MIME_TYPES = new Set([
-    'image/jpeg',
-    'image/png',
-    'image/webp',
-    'image/gif',
-    'image/svg+xml',
-]);
-
-const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
 
 function bufferToStream(buffer) {
     const stream = new Readable();
@@ -29,38 +20,6 @@ function bufferToStream(buffer) {
 function getPublicId(folder) {
     const name = `${Date.now()}_${nanoid(10)}`;
     return folder ? `${folder}/${name}` : name;
-}
-
-function getExtension(filename) {
-    const match = filename?.toLowerCase().match(/\.(jpg|jpeg|png|webp|gif|svg)$/);
-    return match ? match[0] : '';
-}
-
-export function validateImageFile(file, maxSizeBytes = MAX_IMAGE_SIZE_BYTES) {
-    if (!file || !file.buffer) {
-        const error = new Error('Image file is required');
-        error.statusCode = 400;
-        throw error;
-    }
-
-    if (!ALLOWED_MIME_TYPES.has(file.mimetype)) {
-        const error = new Error('Unsupported image type');
-        error.statusCode = 415;
-        throw error;
-    }
-
-    if (file.size > maxSizeBytes) {
-        const error = new Error(`Image must be smaller than ${maxSizeBytes / 1024 / 1024} MB`);
-        error.statusCode = 413;
-        throw error;
-    }
-
-    const extension = getExtension(file.originalname);
-    if (!extension) {
-        const error = new Error('Image file extension is not allowed');
-        error.statusCode = 415;
-        throw error;
-    }
 }
 
 export async function uploadImage(file, folder = 'portfolio', options = {}) {

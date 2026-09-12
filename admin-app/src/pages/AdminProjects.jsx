@@ -10,7 +10,7 @@ import {
   useConfirm,
   useToast,
 } from "../components/ui.jsx";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   fetchApiAuth,
   getAccessToken,
@@ -20,6 +20,7 @@ import { parseValidationErrors } from "../utils/errorHelpers.js";
 import { useNavigate, Link, useLocation, useParams } from "react-router-dom";
 import LoadingOverlay from "../components/LoadingOverlay.jsx";
 import ImageDropZone from "../components/ImageDropZone.jsx";
+import SearchableSelect from "../components/SearchableSelect.jsx";
 
 const portfolioBaseUrl =
   import.meta.env.VITE_PORTFOLIO_URL || "http://localhost:5173";
@@ -51,8 +52,6 @@ const statusLabels = {
   planned: "Planned",
   archived: "Archived",
 };
-
-const statusOrder = ["completed", "in_progress", "planned", "archived"];
 
 function listToText(value) {
   if (!value) {
@@ -181,6 +180,8 @@ function AdminProjects() {
   const [coverPreview, setCoverPreview] = useState("");
   const [galleryItems, setGalleryItems] = useState([]);
   const [galleryPreviews, setGalleryPreviews] = useState([]);
+  const coverBlobUrlRef = useRef("");
+  const galleryBlobUrlsRef = useRef([]);
   const [editingProjectId, setEditingProjectId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -197,6 +198,26 @@ function AdminProjects() {
       : routeProjectId
         ? "view"
         : "list";
+
+  const clearCoverBlobUrl = () => {
+    if (coverBlobUrlRef.current) {
+      URL.revokeObjectURL(coverBlobUrlRef.current);
+      coverBlobUrlRef.current = "";
+    }
+  };
+
+  const clearGalleryBlobUrls = () => {
+    galleryBlobUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
+    galleryBlobUrlsRef.current = [];
+  };
+
+  useEffect(
+    () => () => {
+      clearCoverBlobUrl();
+      clearGalleryBlobUrls();
+    },
+    [],
+  );
 
   useEffect(() => {
     if (!getAccessToken()) {
@@ -228,6 +249,8 @@ function AdminProjects() {
 
   useEffect(() => {
     if (routeMode === "create") {
+      clearCoverBlobUrl();
+      clearGalleryBlobUrls();
       setEditingProjectId(null);
       setForm(initialForm);
       setCoverFile(null);
@@ -269,10 +292,6 @@ function AdminProjects() {
     }
   }
 
-  const featuredProjects = useMemo(
-    () => projects.filter((project) => project.featured),
-    [projects],
-  );
   const selectedProject = useMemo(() => {
     if (!routeProjectId) {
       return null;
@@ -283,14 +302,6 @@ function AdminProjects() {
       null
     );
   }, [projects, routeProjectId]);
-  const groupedByStatus = useMemo(() => {
-    return projects.reduce((groups, project) => {
-      const status = project.status || "planned";
-      if (!groups[status]) groups[status] = [];
-      groups[status].push(project);
-      return groups;
-    }, {});
-  }, [projects]);
 
   const handleFieldChange = (field) => (event) => {
     const value =
@@ -324,18 +335,22 @@ function AdminProjects() {
       return;
     }
 
+    clearCoverBlobUrl();
     setCoverFile(file);
-    setCoverPreview(file ? URL.createObjectURL(file) : form.cover_url || "");
+    if (file) {
+      coverBlobUrlRef.current = URL.createObjectURL(file);
+    }
+    setCoverPreview(coverBlobUrlRef.current || form.cover_url || "");
   };
 
-  const handleTechnologyChange = (event) => {
-    const selected = Array.from(event.target.selectedOptions).map((option) =>
-      Number(option.value),
-    );
+  const handleTechnologyChange = (values) => {
+    const selected = values.map(Number);
     setForm((current) => ({ ...current, technologyIds: selected }));
   };
 
   const startEditingProject = (project) => {
+    clearCoverBlobUrl();
+    clearGalleryBlobUrls();
     setEditingProjectId(project.id);
     setForm({
       name: project.name || "",
@@ -367,6 +382,8 @@ function AdminProjects() {
   };
 
   const cancelEdit = () => {
+    clearCoverBlobUrl();
+    clearGalleryBlobUrls();
     setEditingProjectId(null);
     setForm(initialForm);
     setCoverFile(null);
@@ -389,11 +406,10 @@ function AdminProjects() {
     }
 
     const validFiles = selectedFiles.filter(isImageFile);
+    const previewUrls = validFiles.map((file) => URL.createObjectURL(file));
+    galleryBlobUrlsRef.current.push(...previewUrls);
     setGalleryFiles((current) => [...current, ...validFiles]);
-    setGalleryPreviews((current) => [
-      ...current,
-      ...validFiles.map((file) => URL.createObjectURL(file)),
-    ]);
+    setGalleryPreviews((current) => [...current, ...previewUrls]);
   };
 
   const moveGalleryItem = (index, direction) => {
@@ -419,6 +435,34 @@ function AdminProjects() {
     setGalleryItems((current) =>
       current.filter((_, itemIndex) => itemIndex !== index),
     );
+  };
+
+  const movePendingGalleryItem = (index, direction) => {
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= galleryFiles.length) return;
+
+    setGalleryFiles((current) => {
+      const updated = [...current];
+      [updated[index], updated[targetIndex]] = [updated[targetIndex], updated[index]];
+      return updated;
+    });
+    setGalleryPreviews((current) => {
+      const updated = [...current];
+      [updated[index], updated[targetIndex]] = [updated[targetIndex], updated[index]];
+      galleryBlobUrlsRef.current = updated;
+      return updated;
+    });
+  };
+
+  const removePendingGalleryItem = (index) => {
+    const previewUrl = galleryPreviews[index];
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setGalleryFiles((current) => current.filter((_, itemIndex) => itemIndex !== index));
+    setGalleryPreviews((current) => {
+      const updated = current.filter((_, itemIndex) => itemIndex !== index);
+      galleryBlobUrlsRef.current = updated;
+      return updated;
+    });
   };
 
   const uploadImageFile = async (file) => {
@@ -484,6 +528,9 @@ function AdminProjects() {
     setError(null);
     setValidationErrors({});
 
+    const uploadedMediaIds = [];
+    let projectSaved = false;
+
     try {
       const requestBody = { ...form };
       const { errors, normalizedSlug } = validateProjectForm(requestBody);
@@ -504,6 +551,7 @@ function AdminProjects() {
 
       if (coverFile) {
         const coverMedia = await uploadImageFile(coverFile);
+        if (coverMedia?.id) uploadedMediaIds.push(coverMedia.id);
         requestBody.cover_media_id = coverMedia?.id ?? null;
       }
 
@@ -514,9 +562,12 @@ function AdminProjects() {
       }));
 
       if (galleryFiles.length) {
-        const galleryMedia = await Promise.all(
-          galleryFiles.map((file) => uploadImageFile(file)),
-        );
+        const galleryMedia = [];
+        for (const file of galleryFiles) {
+          const media = await uploadImageFile(file);
+          if (media?.id) uploadedMediaIds.push(media.id);
+          galleryMedia.push(media);
+        }
         galleryImages = [
           ...galleryImages,
           ...galleryMedia.filter(Boolean).map((media, index) => ({
@@ -555,7 +606,10 @@ function AdminProjects() {
         });
         notify("Project saved successfully.");
       }
+      projectSaved = true;
 
+      clearCoverBlobUrl();
+      clearGalleryBlobUrls();
       setForm(initialForm);
       setCoverFile(null);
       setGalleryFiles([]);
@@ -566,6 +620,13 @@ function AdminProjects() {
       await loadProjects();
       navigate("/projects");
     } catch (err) {
+      if (!projectSaved && uploadedMediaIds.length) {
+        await Promise.allSettled(
+          uploadedMediaIds.map((mediaId) =>
+            fetchApiAuth(`/api/admin/media/${mediaId}`, { method: "DELETE" }),
+          ),
+        );
+      }
       const validation = parseValidationErrors(err);
       if (Object.keys(validation.fieldErrors).length > 0) {
         setValidationErrors(validation.fieldErrors);
@@ -817,16 +878,7 @@ function AdminProjects() {
               </div>
               <FormField>
                 Status
-                <select
-                  value={form.status}
-                  onChange={handleFieldChange("status")}
-                >
-                  {Object.entries(statusLabels).map(([value, label]) => (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
+                <SearchableSelect ariaLabel="Project status" value={form.status} onChange={(value) => setForm((current) => ({ ...current, status: value }))} options={Object.entries(statusLabels).map(([value, label]) => ({ value, label }))} />
                 {validationErrors.status && (
                   <span className="admin-field-error">
                     {validationErrors.status}
@@ -974,6 +1026,31 @@ function AdminProjects() {
                         alt={`Gallery preview ${index + 1}`}
                         loading="lazy"
                       />
+                      <div className="gallery-order-actions">
+                        <button
+                          type="button"
+                          className="secondary-button"
+                          onClick={() => movePendingGalleryItem(index, -1)}
+                          disabled={index === 0}
+                        >
+                          Up
+                        </button>
+                        <button
+                          type="button"
+                          className="secondary-button"
+                          onClick={() => movePendingGalleryItem(index, 1)}
+                          disabled={index === galleryPreviews.length - 1}
+                        >
+                          Down
+                        </button>
+                        <button
+                          type="button"
+                          className="secondary-button"
+                          onClick={() => removePendingGalleryItem(index)}
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -985,20 +1062,7 @@ function AdminProjects() {
             >
               <FormField>
                 Technologies used
-                <select
-                  multiple
-                  value={form.technologyIds.map(String)}
-                  onChange={handleTechnologyChange}
-                >
-                  {skills.map((skill) => (
-                    <option key={skill.id} value={skill.id}>
-                      {skill.name} ({skill.category})
-                    </option>
-                  ))}
-                </select>
-                <span className="admin-help-text">
-                  Hold Ctrl or Cmd to select multiple technologies.
-                </span>
+                <SearchableSelect multiple ariaLabel="Technologies used" placeholder="Select technologies" searchPlaceholder="Search technologies..." value={form.technologyIds} onChange={handleTechnologyChange} options={skills.map((skill) => ({ value: skill.id, label: `${skill.name} (${skill.category})` }))} />
               </FormField>
             </FormSection>
             <FormSection

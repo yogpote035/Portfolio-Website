@@ -237,7 +237,6 @@ export async function createProject(projectData) {
         ],
     );
 
-    const project = await findProjectById(result.insertId);
     if (projectData.technologyIds) {
         await replaceProjectTechnologies(result.insertId, projectData.technologyIds);
     }

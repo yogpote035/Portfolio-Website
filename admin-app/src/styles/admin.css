@@ -234,6 +234,18 @@ small {
 .admin-brand-mark span {
   color: inherit;
 }
+.admin-brand-mark:has(img) {
+  padding: 0;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.admin-brand-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+}
 .admin-brand strong {
   font-size: 18px;
   letter-spacing: -0.5px;
@@ -244,6 +256,42 @@ small {
   font-size: 10px;
   letter-spacing: 0.2px;
 }
+
+/* Searchable select */
+.cms-select{position:relative;width:100%;margin-top:6px}
+.cms-select-trigger{width:100%;min-height:44px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;cursor:pointer;transition:border-color .16s,box-shadow .16s}
+.cms-select-trigger:hover,.cms-select.is-open .cms-select-trigger{border-color:var(--primary)}
+.cms-select.is-open .cms-select-trigger{box-shadow:0 0 0 3px color-mix(in srgb,var(--primary) 14%,transparent)}
+.cms-select.is-open .cms-select-trigger svg{transform:rotate(180deg)}
+.cms-select-trigger svg{flex:0 0 auto;transition:transform .16s}
+.cms-select-placeholder{color:var(--muted)}
+.cms-select-popover{position:absolute;z-index:80;top:calc(100% + 6px);left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:0 18px 44px rgba(15,23,42,.16);padding:8px}
+.cms-select-search,
+.admin-form .cms-select-search,
+.project-form .cms-select-search,
+.admin-login-card form .cms-select-search {
+  height:40px;
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:0 10px;
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+  gap:8px;
+  color:var(--muted);
+}
+.cms-select-search svg{flex:0 0 auto}
+.cms-select-search input{border:0!important;box-shadow:none!important;padding:0!important;margin:0;background:transparent;width:100%;height:100%;color:var(--text)}
+.cms-select-options{max-height:260px;overflow-y:auto;margin-top:7px;display:grid;gap:2px;scrollbar-width:thin;scrollbar-color:var(--primary) var(--surface-soft)}
+.cms-select-options button{border:0;background:transparent;color:var(--text);border-radius:6px;padding:9px 10px;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;cursor:pointer}
+.cms-select-options button:hover,.cms-select-options button:focus-visible{background:var(--surface-soft)}
+.cms-select-options button.is-selected{background:color-mix(in srgb,var(--primary) 13%,var(--surface));color:var(--primary);font-weight:650}
+.cms-select-options p{padding:16px 10px;text-align:center;color:var(--muted);font-size:13px}
+.cms-select-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.cms-select-chips button{border:1px solid color-mix(in srgb,var(--primary) 35%,var(--border));background:color-mix(in srgb,var(--primary) 8%,var(--surface));color:var(--text);border-radius:6px;padding:5px 8px;display:inline-flex;align-items:center;gap:7px;font-size:12px;cursor:pointer}
+.cms-select-chips button:hover{border-color:var(--primary);color:var(--primary)}
+.cms-select-chips button span{font-size:16px;line-height:1}
+@media(max-width:600px){.cms-select-popover{position:fixed;z-index:120;left:12px;right:12px;top:18%;max-height:65vh}.cms-select-options{max-height:48vh}}
 .admin-sidebar-nav {
   display: grid;
   gap: 23px;
@@ -1002,6 +1050,18 @@ td small {
   color: var(--danger);
   font-size: 11px;
 }
+.cms-field-label {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
+  width: fit-content;
+}
+.cms-required-mark {
+  color: var(--danger);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+}
 .admin-help-text,
 .admin-form-description,
 .admin-muted-text,
@@ -1056,8 +1116,17 @@ textarea:disabled {
 input[aria-invalid="true"],
 textarea[aria-invalid="true"],
 select[aria-invalid="true"],
+.cms-select-trigger[aria-invalid="true"],
+input:user-invalid,
+textarea:user-invalid,
+select:user-invalid,
 label:has(.admin-field-error) input {
   border-color: var(--danger);
+}
+input:user-invalid:focus,
+textarea:user-invalid:focus,
+select:user-invalid:focus {
+  outline-color: var(--danger);
 }
 textarea {
   resize: vertical;

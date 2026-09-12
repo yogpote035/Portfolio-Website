@@ -252,6 +252,7 @@ function AdminResumes() {
                   type="file"
                   accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                   onChange={(e) => setFile(e.target.files?.[0] || null)}
+                  required
                 />
               </FormField>
               {file && (

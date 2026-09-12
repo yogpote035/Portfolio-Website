@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS portfolio_stats (
 CREATE TABLE IF NOT EXISTS skills (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(120) NOT NULL,
-  category ENUM('frontend', 'backend', 'database', 'devops', 'languages', 'cloud', 'tools', 'ai') NOT NULL,
+  category ENUM('frontend', 'backend', 'database', 'devops', 'languages', 'cloud', 'tools', 'ai', 'payment_gateway') NOT NULL,
   logo_media_id BIGINT UNSIGNED NULL,
   color VARCHAR(32) NULL,
   level TINYINT UNSIGNED NULL,

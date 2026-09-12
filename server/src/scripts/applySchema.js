@@ -97,6 +97,9 @@ async function normalizeDisplayOrder(connection, tableName) {
 }
 
 async function applyIncrementalMigrations(connection) {
+    await connection.query(
+        `ALTER TABLE skills MODIFY COLUMN category ENUM('frontend', 'backend', 'database', 'devops', 'languages', 'cloud', 'tools', 'ai', 'payment_gateway') NOT NULL`,
+    );
     await dropColumnIfPresent(connection, 'profile', 'bio');
     await dropForeignKeyIfPresent(connection, 'profile', 'fk_profile_photo_media');
     await dropForeignKeyIfPresent(connection, 'profile', 'fk_profile_resume_media');

@@ -12,6 +12,7 @@ import {
   clearAuthTokens,
 } from "../utils/authClient.js";
 import { parseValidationErrors } from "../utils/errorHelpers.js";
+import { getNextDisplayOrder } from "../utils/displayOrder.js";
 import ImageUploadField from "../components/ImageUploadField.jsx";
 import LoadingOverlay from "../components/LoadingOverlay.jsx";
 
@@ -126,7 +127,7 @@ function AdminProfile() {
   const addSocialLink = () => {
     setSocials((current) => [
       ...current,
-      { label: "", icon: "", url: "", display_order: current.length + 1 },
+      { label: "", icon: "", url: "", display_order: getNextDisplayOrder(current) },
     ]);
   };
 
@@ -137,7 +138,7 @@ function AdminProfile() {
   const addStat = () => {
     setStats((current) => [
       ...current,
-      { label: "", value: "", display_order: current.length + 1 },
+      { label: "", value: "", display_order: getNextDisplayOrder(current) },
     ]);
   };
 

@@ -5,11 +5,25 @@ import { normalizeSkillGroups } from '../utils/apiTransform.js';
 import { fadeUp, staggerContainer, viewport } from '../utils/animations.js';
 import SectionTitle from './SectionTitle.jsx';
 
+function includePaymentGatewayFallback(skills) {
+  const normalized = normalizeSkillGroups(skills);
+  const hasPaymentGateway = normalized.some(
+    (group) => group.category === 'Payment Gateways',
+  );
+
+  if (hasPaymentGateway) return normalized;
+
+  const fallback = skillGroups.find(
+    (group) => group.category === 'Payment Gateways',
+  );
+  return fallback ? [...normalized, fallback] : normalized;
+}
+
 function SkillsSection() {
   const { data: skills } = useApiData({
     path: '/api/skills',
     fallbackData: skillGroups,
-    transform: normalizeSkillGroups,
+    transform: includePaymentGatewayFallback,
   });
 
   return (

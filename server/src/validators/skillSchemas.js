@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 const skillBodySchema = z.object({
     name: z.string().min(1),
-    category: z.enum(['frontend', 'backend', 'database', 'devops', 'languages', 'cloud', 'tools', 'ai']),
+    category: z.enum(['frontend', 'backend', 'database', 'devops', 'languages', 'cloud', 'tools', 'ai', 'payment_gateway']),
     logo_media_id: z.number().int().positive().nullable().optional(),
     color: z.string().nullable().optional(),
     level: z.number().int().min(0).max(100).nullable().optional(),

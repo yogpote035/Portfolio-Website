@@ -45,6 +45,11 @@ export const skillGroups = [
     icon: "bx-wrench",
     skills: ["Git", "GitHub", "Vercel", "Render", "VS Code", "Hoppscotch"],
   },
+  {
+    category: "Payment Gateways",
+    icon: "bx-credit-card",
+    skills: ["Payment Gateway Integration"],
+  },
 ];
 
 export const experiences = [

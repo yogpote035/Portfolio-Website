@@ -20,6 +20,7 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import ImageUploadField from "../components/ImageUploadField.jsx";
 import LoadingOverlay from "../components/LoadingOverlay.jsx";
 import SearchableSelect from "../components/SearchableSelect.jsx";
+import { getNextDisplayOrder } from "../utils/displayOrder.js";
 
 const skillCategories = [
   "frontend",
@@ -30,7 +31,20 @@ const skillCategories = [
   "cloud",
   "tools",
   "ai",
+  "payment_gateway",
 ];
+
+const skillCategoryLabels = {
+  frontend: "Frontend",
+  backend: "Backend",
+  database: "Database",
+  devops: "DevOps",
+  languages: "Languages",
+  cloud: "Cloud",
+  tools: "Tools",
+  ai: "AI",
+  payment_gateway: "Payment Gateway",
+};
 
 const initialSkillForm = {
   name: "",
@@ -174,6 +188,15 @@ function AdminSkills() {
       setForm(initialSkillForm);
     }
   }, [routeMode]);
+
+  useEffect(() => {
+    if (routeMode === "create" && !loading) {
+      setForm((current) => ({
+        ...current,
+        display_order: getNextDisplayOrder(skills),
+      }));
+    }
+  }, [routeMode, loading, skills]);
 
   const handleFieldChange = (field) => (event) => {
     const value =
@@ -408,7 +431,7 @@ function AdminSkills() {
                 </FormField>
                 <FormField required>
                   Category
-                  <SearchableSelect required invalid={Boolean(validationErrors.category)} ariaLabel="Skill category" value={form.category} onChange={(value) => { setForm((current) => ({ ...current, category: value })); setValidationErrors((current) => ({ ...current, category: undefined })); }} options={skillCategories.map((category) => ({ value: category, label: category }))} />
+                  <SearchableSelect required invalid={Boolean(validationErrors.category)} ariaLabel="Skill category" value={form.category} onChange={(value) => { setForm((current) => ({ ...current, category: value })); setValidationErrors((current) => ({ ...current, category: undefined })); }} options={skillCategories.map((category) => ({ value: category, label: skillCategoryLabels[category] }))} />
                   {validationErrors.category && (
                     <span className="admin-field-error">
                       {validationErrors.category}

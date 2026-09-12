@@ -21,6 +21,7 @@ import { useNavigate, Link, useLocation, useParams } from "react-router-dom";
 import LoadingOverlay from "../components/LoadingOverlay.jsx";
 import ImageDropZone from "../components/ImageDropZone.jsx";
 import SearchableSelect from "../components/SearchableSelect.jsx";
+import { getNextDisplayOrder } from "../utils/displayOrder.js";
 
 const portfolioBaseUrl =
   import.meta.env.VITE_PORTFOLIO_URL || "http://localhost:5173";
@@ -55,7 +56,7 @@ const statusLabels = {
 
 const projectTypeOptions = [
   { value: "personal", label: "Personal project" },
-  { value: "company", label: "Company project" },
+  { value: "company", label: "Enterprise project" },
   { value: "freelance", label: "Freelance project" },
 ];
 
@@ -272,6 +273,15 @@ function AdminProjects() {
       setGalleryPreviews([]);
     }
   }, [routeMode]);
+
+  useEffect(() => {
+    if (routeMode === "create" && !loading) {
+      setForm((current) => ({
+        ...current,
+        display_order: getNextDisplayOrder(projects),
+      }));
+    }
+  }, [routeMode, loading, projects]);
 
   async function loadProjects() {
     setLoading(true);

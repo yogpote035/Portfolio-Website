@@ -18,6 +18,7 @@ import {
 } from "../utils/authClient.js";
 import LoadingOverlay from "../components/LoadingOverlay.jsx";
 import { parseValidationErrors } from "../utils/errorHelpers.js";
+import { getNextDisplayOrder } from "../utils/displayOrder.js";
 
 const initialForm = {
   degree: "",
@@ -106,6 +107,15 @@ function AdminEducation() {
       setForm(initialForm);
     }
   }, [routeMode]);
+
+  useEffect(() => {
+    if (routeMode === "create" && !loading) {
+      setForm((current) => ({
+        ...current,
+        display_order: getNextDisplayOrder(educationEntries),
+      }));
+    }
+  }, [routeMode, loading, educationEntries]);
 
   async function loadEducation() {
     setLoading(true);

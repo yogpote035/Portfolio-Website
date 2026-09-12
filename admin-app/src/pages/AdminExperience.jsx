@@ -20,6 +20,7 @@ import {
   clearAuthTokens,
 } from "../utils/authClient.js";
 import { parseValidationErrors } from "../utils/errorHelpers.js";
+import { getNextDisplayOrder } from "../utils/displayOrder.js";
 
 const initialForm = {
   company: "",
@@ -111,6 +112,15 @@ function AdminExperience() {
       setForm(initialForm);
     }
   }, [routeMode]);
+
+  useEffect(() => {
+    if (routeMode === "create" && !loading) {
+      setForm((current) => ({
+        ...current,
+        display_order: getNextDisplayOrder(experiences),
+      }));
+    }
+  }, [routeMode, loading, experiences]);
 
   async function loadExperiences() {
     setLoading(true);

@@ -7,6 +7,7 @@ const skillCategoryIcons = {
     'State & Auth': 'bx-lock-alt',
     Languages: 'bx-code-alt',
     'Tools & Platforms': 'bx-wrench',
+    'Payment Gateways': 'bx-credit-card',
 };
 
 const skillCategoryLabels = {
@@ -19,6 +20,7 @@ const skillCategoryLabels = {
     cloud: 'Tools & Platforms',
     languages: 'Languages',
     ai: 'Tools & Platforms',
+    payment_gateway: 'Payment Gateways',
 };
 
 function parseJsonList(value) {
@@ -153,7 +155,7 @@ export function normalizeEducationEntries(entries = []) {
 
 export function normalizeProjectList(projects = [], fallbackProjects = []) {
     return projects.map((item) => {
-        const fallback = getProjectBySlug(item.slug) || fallbackProjects.find((project) => project.slug === item.slug);
+        const fallback = getProjectBySlug(item.slug) || fallbackProjects.find((project) => project?.slug === item.slug);
         const rawTechnologies = Array.isArray(item.technologies) ? item.technologies : parseJsonList(item.technologies);
         const rawGallery = Array.isArray(item.gallery) ? item.gallery : parseJsonList(item.gallery);
         const technologies = rawTechnologies
@@ -197,7 +199,7 @@ function backdropAsString(value) {
 }
 
 export function normalizeProjectDetail(project = {}, fallbackProject = null) {
-    const base = normalizeProjectList([project], fallbackProject ? [fallbackProject] : [fallbackProject])[0];
+    const base = normalizeProjectList([project], fallbackProject ? [fallbackProject] : [])[0];
 
     if (!base) {
         return null;

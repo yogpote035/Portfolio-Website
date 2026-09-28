@@ -1,9 +1,9 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import useActiveSection from '../hooks/useActiveSection.js';
 
-const sectionIds = ['home', 'about', 'skills', 'experience', 'portfolio', 'education', 'contact'];
+const sectionIds = ['home', 'about', 'skills', 'experience', 'education', 'portfolio', 'contact'];
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -11,6 +11,7 @@ function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const activeSection = useActiveSection(sectionIds);
   const location = useLocation();
+  const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
 
   const navLinks = useMemo(
@@ -54,6 +55,20 @@ function Navbar() {
     return location.pathname === '/' && activeSection === link.section;
   };
 
+  const handleSectionClick = (event, link) => {
+    setMenuOpen(false);
+
+    if (location.pathname !== '/' || !link.to.startsWith('/#')) return;
+
+    event.preventDefault();
+    const target = document.getElementById(link.section);
+    navigate(link.to);
+    target?.scrollIntoView({
+      behavior: reduceMotion ? 'auto' : 'smooth',
+      block: 'start',
+    });
+  };
+
   return (
     <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
       <a className="skip-link" href="#main-content">Skip to content</a>
@@ -61,7 +76,7 @@ function Navbar() {
         <Link className="logo" to="/#home" aria-label="Yogesh Pote home"><span>YP</span><small>Portfolio</small></Link>
         <nav className="desktop-nav" aria-label="Primary navigation">
           {navLinks.map((link) => (
-            <Link className={isActive(link) ? 'active' : ''} key={link.label} to={link.to}>
+            <Link className={isActive(link) ? 'active' : ''} key={link.label} to={link.to} onClick={(event) => handleSectionClick(event, link)}>
               {link.label}{isActive(link) && <motion.span className="nav-indicator" layoutId="nav-indicator" />}
             </Link>
           ))}
@@ -81,7 +96,7 @@ function Navbar() {
           <motion.nav id="mobile-navigation" className="mobile-nav" aria-label="Mobile navigation" initial={reduceMotion ? false : { opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.22 }}>
             {navLinks.map((link, index) => (
               <motion.div key={link.label} initial={reduceMotion ? false : { opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.035 }}>
-                <Link className={isActive(link) ? 'active' : ''} to={link.to} onClick={() => setMenuOpen(false)}><span>0{index + 1}</span>{link.label}</Link>
+                <Link className={isActive(link) ? 'active' : ''} to={link.to} onClick={(event) => handleSectionClick(event, link)}><span>0{index + 1}</span>{link.label}</Link>
               </motion.div>
             ))}
             <Link className="mobile-contact-link" to="/#contact" onClick={() => setMenuOpen(false)}>Let&apos;s work together <i className="bx bx-right-arrow-alt" /></Link>

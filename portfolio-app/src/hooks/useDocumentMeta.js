@@ -12,16 +12,22 @@ function setMeta(name, content, property = false) {
   element.setAttribute('content', content);
 }
 
+const siteUrl = (import.meta.env.VITE_SITE_URL || window.location.origin).replace(/\/$/, '');
+
 function useDocumentMeta({ title, description, image, canonicalPath = '/', structuredData }) {
   useEffect(() => {
     const fullTitle = title || 'Yogesh Pote | MERN Stack Developer';
-    const canonicalUrl = new URL(canonicalPath, window.location.origin).toString();
+    const canonicalUrl = new URL(canonicalPath, `${siteUrl}/`).toString();
     document.title = fullTitle;
     setMeta('description', description);
+    setMeta('author', 'Yogesh Pote');
+    setMeta('keywords', 'Yogesh Pote, MERN Stack Developer, React Developer, Node.js Developer, Full Stack Developer, Pune');
     setMeta('og:title', fullTitle, true);
     setMeta('og:description', description, true);
     setMeta('og:type', 'website', true);
     setMeta('og:url', canonicalUrl, true);
+    setMeta('og:site_name', 'Yogesh Pote Portfolio', true);
+    setMeta('og:locale', 'en_IN', true);
     setMeta('og:image', image, true);
     setMeta('twitter:card', 'summary_large_image');
     setMeta('twitter:title', fullTitle);

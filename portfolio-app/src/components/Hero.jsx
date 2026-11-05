@@ -65,7 +65,7 @@ function Hero() {
         </motion.p>
         <motion.div className="hero-actions" variants={fadeUp}>
           <Button to="/projects">Explore my work <i className="bx bx-right-arrow-alt" /></Button>
-          <Button className="btn-text" download="Yogesh_Pote_Resume" href={resumeLink}>Download resume <i className="bx bx-download" /></Button>
+          <Button className="btn-text" href={resumeLink} target="_blank" rel="noopener noreferrer">Download resume <i className="bx bx-download" /></Button>
         </motion.div>
         <motion.div variants={fadeUp}>
           <SocialLinks socials={profileData.socials} />

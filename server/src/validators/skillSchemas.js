@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 const skillBodySchema = z.object({
     name: z.string().min(1),
-    category: z.enum(['frontend', 'backend', 'database', 'devops', 'languages', 'cloud', 'tools', 'ai', 'payment_gateway']),
+    category: z.string().trim().min(1).max(80).regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/, 'Category must use lowercase letters, numbers, and underscores'),
     logo_media_id: z.number().int().positive().nullable().optional(),
     color: z.string().nullable().optional(),
     level: z.number().int().min(0).max(100).nullable().optional(),

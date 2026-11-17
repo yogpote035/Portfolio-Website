@@ -7,6 +7,7 @@ USE portfolio_db;
 CREATE TABLE IF NOT EXISTS admin_users (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(120) NOT NULL,
+  icon VARCHAR(80) NOT NULL DEFAULT 'bx-star',
   email VARCHAR(160) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
   role ENUM('super_admin', 'admin') NOT NULL DEFAULT 'admin',
@@ -96,10 +97,20 @@ CREATE TABLE IF NOT EXISTS portfolio_stats (
   INDEX idx_portfolio_stats_profile_order (profile_id, display_order)
 );
 
+CREATE TABLE IF NOT EXISTS skill_categories (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  slug VARCHAR(80) NOT NULL UNIQUE,
+  name VARCHAR(120) NOT NULL,
+  display_order INT NOT NULL DEFAULT 1,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 CREATE TABLE IF NOT EXISTS skills (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(120) NOT NULL,
-  category ENUM('frontend', 'backend', 'database', 'devops', 'languages', 'cloud', 'tools', 'ai', 'payment_gateway') NOT NULL,
+  category VARCHAR(80) NOT NULL,
   logo_media_id BIGINT UNSIGNED NULL,
   color VARCHAR(32) NULL,
   level TINYINT UNSIGNED NULL,

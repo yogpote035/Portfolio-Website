@@ -3,9 +3,10 @@ import { pool } from '../config/db.js';
 export async function findSkills(includeInactive = false) {
     const condition = includeInactive ? '' : 'WHERE s.is_active = TRUE';
     const [rows] = await pool.execute(
-        `SELECT s.*, m.url AS logo_media_url, m.public_id AS logo_media_public_id
+        `SELECT s.*, m.url AS logo_media_url, m.public_id AS logo_media_public_id, sc.icon AS category_icon
      FROM skills s
      LEFT JOIN media m ON s.logo_media_id = m.id
+     LEFT JOIN skill_categories sc ON s.category = sc.slug
      ${condition}
      ORDER BY s.display_order ASC, s.id ASC`,
     );
@@ -14,9 +15,10 @@ export async function findSkills(includeInactive = false) {
 
 export async function findSkillById(id) {
     const [rows] = await pool.execute(
-        `SELECT s.*, m.url AS logo_media_url, m.public_id AS logo_media_public_id
+        `SELECT s.*, m.url AS logo_media_url, m.public_id AS logo_media_public_id, sc.icon AS category_icon
      FROM skills s
      LEFT JOIN media m ON s.logo_media_id = m.id
+     LEFT JOIN skill_categories sc ON s.category = sc.slug
      WHERE s.id = ? LIMIT 1`,
         [id],
     );

@@ -44,6 +44,12 @@ async function columnExists(connection, tableName, columnName) {
     return Number(rows[0]?.count || 0) > 0;
 }
 
+async function addColumnIfMissing(connection, tableName, columnName, definition) {
+    if (!(await columnExists(connection, tableName, columnName))) {
+        await connection.query(`ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${definition}`);
+    }
+}
+
 async function dropColumnIfPresent(connection, tableName, columnName) {
     if (await columnExists(connection, tableName, columnName)) {
         await connection.query(`ALTER TABLE ${tableName} DROP COLUMN ${columnName}`);
@@ -97,9 +103,26 @@ async function normalizeDisplayOrder(connection, tableName) {
 }
 
 async function applyIncrementalMigrations(connection) {
-    await connection.query(
-        `ALTER TABLE skills MODIFY COLUMN category ENUM('frontend', 'backend', 'database', 'devops', 'languages', 'cloud', 'tools', 'ai', 'payment_gateway') NOT NULL`,
-    );
+    await connection.query(`
+        CREATE TABLE IF NOT EXISTS skill_categories (
+          id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+          slug VARCHAR(80) NOT NULL UNIQUE,
+          name VARCHAR(120) NOT NULL,
+          icon VARCHAR(80) NOT NULL DEFAULT 'bx-star',
+          display_order INT NOT NULL DEFAULT 1,
+          is_active BOOLEAN NOT NULL DEFAULT TRUE,
+          created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        )
+    `);
+    await connection.query(`ALTER TABLE skills MODIFY COLUMN category VARCHAR(80) NOT NULL`);
+    await addColumnIfMissing(connection, 'skill_categories', 'icon', "VARCHAR(80) NOT NULL DEFAULT 'bx-star' AFTER name");
+    await connection.query(`
+      INSERT IGNORE INTO skill_categories (slug, name, display_order)
+      VALUES ('frontend','Frontend',1),('backend','Backend',2),('database','Database',3),
+      ('devops','DevOps',4),('languages','Languages',5),('cloud','Cloud',6),
+      ('tools','Tools',7),('ai','AI',8),('payment_gateway','Payment Gateway',9)
+    `);
     await dropColumnIfPresent(connection, 'profile', 'bio');
     await dropForeignKeyIfPresent(connection, 'profile', 'fk_profile_photo_media');
     await dropForeignKeyIfPresent(connection, 'profile', 'fk_profile_resume_media');

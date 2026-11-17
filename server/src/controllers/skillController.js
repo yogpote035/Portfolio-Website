@@ -8,6 +8,7 @@ import {
 } from '../models/skillModel.js';
 import { logAdminActivity } from '../utils/activityLogger.js';
 import { recordContentVersion } from '../services/contentVersion.service.js';
+import { createSkillCategory, deleteSkillCategory, findSkillCategories, updateSkillCategory } from '../models/skillCategoryModel.js';
 
 export async function getSkills(req, res) {
     const skills = await findSkills();
@@ -17,6 +18,40 @@ export async function getSkills(req, res) {
 export async function getAdminSkills(req, res) {
     const skills = await findSkills(true);
     return sendSuccess(res, 'Admin skills fetched successfully', skills);
+}
+
+export async function getSkillCategories(req, res) {
+    return sendSuccess(res, 'Skill categories fetched successfully', await findSkillCategories(Boolean(req.adminCategories)));
+}
+
+export async function createNewSkillCategory(req, res) {
+    let category;
+    try {
+        category = await createSkillCategory(req.validated.body);
+    } catch (error) {
+        if (error.code === 'ER_DUP_ENTRY') {
+            const duplicate = new Error('A category with this slug already exists. Choose a different slug.');
+            duplicate.statusCode = 409;
+            duplicate.code = 'CATEGORY_SLUG_EXISTS';
+            duplicate.errors = { slug: 'This slug is already in use.' };
+            throw duplicate;
+        }
+        throw error;
+    }
+    return sendSuccess(res, 'Skill category created successfully', category, 201);
+}
+
+export async function updateExistingSkillCategory(req, res) {
+    const current = (await findSkillCategories(true)).find((item) => String(item.id) === String(req.params.id));
+    if (!current) { const error = new Error('Skill category not found'); error.statusCode = 404; throw error; }
+    const category = await updateSkillCategory(req.params.id, { ...current, ...req.validated.body });
+    return sendSuccess(res, 'Skill category updated successfully', category);
+}
+
+export async function removeSkillCategory(req, res) {
+    const deleted = await deleteSkillCategory(req.params.id);
+    if (!deleted) { const error = new Error('Skill category not found'); error.statusCode = 404; throw error; }
+    return sendSuccess(res, 'Skill category deleted successfully');
 }
 
 export async function createNewSkill(req, res) {

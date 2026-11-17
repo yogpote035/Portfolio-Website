@@ -16,6 +16,13 @@ export function errorMiddleware(error, req, res, _next) {
         : 'Invalid file upload request';
   }
 
+  if (error.code === 'ER_DUP_ENTRY') {
+    statusCode = 409;
+    message = error.sqlMessage?.includes('skill_categories.slug')
+      ? 'A category with this slug already exists. Choose a different slug.'
+      : 'This value already exists. Choose a different value.';
+  }
+
   if (process.env.NODE_ENV !== 'test') {
     const details = {
       method: req.method,

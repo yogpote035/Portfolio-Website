@@ -25,6 +25,7 @@ function SkillsSection() {
     fallbackData: skillGroups,
     transform: includePaymentGatewayFallback,
   });
+  const visibleGroups = skills.filter((group) => group.skills.length > 0);
 
   return (
     <section className="skills-section" id="skills">
@@ -42,7 +43,7 @@ function SkillsSection() {
         viewport={viewport}
         whileInView="visible"
       >
-        {skills.map((group) => (
+          {visibleGroups.map((group) => (
           <motion.article className="skill-card" key={group.category} variants={fadeUp}>
             <div className="skill-heading"><i className={`bx ${group.icon}`} /><h3>{group.category}</h3><span>{String(group.skills.length).padStart(2, '0')}</span></div>
             <div className="skill-tags">

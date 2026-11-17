@@ -11,7 +11,7 @@ import useDocumentMeta from '../hooks/useDocumentMeta.js';
 
 function Home() {
   useScrollReveal();
-  useDocumentMeta({ title: 'Yogesh Pote | MERN Stack Developer', description: 'Portfolio of Yogesh Pote, a MERN Stack Developer building scalable React, Node.js, ERP, and product experiences.' });
+  useDocumentMeta({ title: 'Yogesh Pote | MERN Stack Developer in Pune', description: 'Yogesh Pote is a MERN Stack Developer in Pune building scalable React, Node.js, ERP, and product experiences.' });
 
   return (
     <PageTransition>

@@ -7,6 +7,7 @@ const skillCategoryIcons = {
     'State & Auth': 'bx-lock-alt',
     Languages: 'bx-code-alt',
     'Tools & Platforms': 'bx-wrench',
+    AI: 'bx-brain',
     'Payment Gateways': 'bx-credit-card',
 };
 
@@ -19,7 +20,7 @@ const skillCategoryLabels = {
     tools: 'Tools & Platforms',
     cloud: 'Tools & Platforms',
     languages: 'Languages',
-    ai: 'Tools & Platforms',
+    ai: 'AI',
     payment_gateway: 'Payment Gateways',
 };
 
@@ -110,7 +111,7 @@ export function normalizeSkillGroups(skills = []) {
     const groups = skills.reduce((acc, skill) => {
         const rawCategory = skill.category || 'Other';
         const title = skillCategoryLabels[rawCategory] || rawCategory;
-        const icon = skillCategoryIcons[title] || 'bx-star';
+        const icon = skill.category_icon || skillCategoryIcons[title] || 'bx-star';
         const existing = acc[title] || { category: title, icon, skills: [] };
         if (skill.name && !existing.skills.includes(skill.name)) {
             existing.skills.push(skill.name);

@@ -6,8 +6,10 @@ import {
   EmptyState,
   DataTable,
   StatusBadge,
+  Icon,
   useConfirm,
   useToast,
+  Modal,
 } from "../components/ui.jsx";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -46,6 +48,12 @@ const skillCategoryLabels = {
   payment_gateway: "Payment Gateway",
 };
 
+function formatCategoryLabel(category) {
+  return skillCategoryLabels[category] || category
+    .replaceAll("_", " ")
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
 const initialSkillForm = {
   name: "",
   category: "frontend",
@@ -61,6 +69,14 @@ function AdminSkills() {
   const notify = useToast();
   const confirm = useConfirm();
   const [skills, setSkills] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [newCategory, setNewCategory] = useState({ name: "", slug: "" });
+  const [categoryModalOpen, setCategoryModalOpen] = useState(false);
+  const [manageCategoriesOpen, setManageCategoriesOpen] = useState(false);
+  const [editingCategoryId, setEditingCategoryId] = useState(null);
+  const [focusedCategoryIndex, setFocusedCategoryIndex] = useState(0);
+  const [categoryError, setCategoryError] = useState("");
+  const [categorySlugError, setCategorySlugError] = useState("");
   const [form, setForm] = useState(initialSkillForm);
   const [editingSkillId, setEditingSkillId] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -83,6 +99,33 @@ function AdminSkills() {
       : routeSkillId
         ? "view"
         : "list";
+
+  useEffect(() => {
+    if (!manageCategoriesOpen) return undefined;
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setEditingCategoryId(null);
+        setManageCategoriesOpen(false);
+        return;
+      }
+      if (editingCategoryId || !categories.length) return;
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        const next = event.key === "ArrowDown"
+          ? (focusedCategoryIndex + 1) % categories.length
+          : (focusedCategoryIndex - 1 + categories.length) % categories.length;
+        setFocusedCategoryIndex(next);
+        document.querySelector(`[data-category-index="${next}"]`)?.focus();
+      }
+      if (event.key === "Enter") {
+        event.preventDefault();
+        setEditingCategoryId(categories[focusedCategoryIndex].id);
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [categories, editingCategoryId, focusedCategoryIndex, manageCategoriesOpen]);
 
   useEffect(() => {
     if (!getAccessToken()) {
@@ -118,8 +161,12 @@ function AdminSkills() {
     setError(null);
 
     try {
-      const skillsData = await fetchApiAuth("/api/admin/skills");
-      setSkills(skillsData || []);
+      const [skillsData, categoryData] = await Promise.all([
+        fetchApiAuth("/api/admin/skills"),
+        fetchApiAuth("/api/admin/skill-categories"),
+      ]);
+      setSkills(Array.isArray(skillsData) ? skillsData : []);
+      setCategories(Array.isArray(categoryData) ? categoryData : []);
     } catch (err) {
       const message = err.message || "Failed to load skills";
       setError(message);
@@ -146,15 +193,49 @@ function AdminSkills() {
     }, {});
   }, [skills]);
 
-  const orderedCategories = useMemo(() => {
-    const dynamicCategories = Object.keys(groupedSkills).filter(
-      (category) => !skillCategories.includes(category),
-    );
-    return [
-      ...skillCategories.filter((category) => groupedSkills[category]),
-      ...dynamicCategories,
-    ];
-  }, [groupedSkills]);
+  const categoryOptions = useMemo(() => {
+    const values = categories.length
+      ? categories.map((category) => category.slug)
+      : [...skillCategories, ...Object.keys(groupedSkills)];
+    return [...new Set(values)].map((category) => ({
+      value: category,
+      label: categories.find((item) => item.slug === category)?.name || formatCategoryLabel(category),
+    }));
+  }, [categories, groupedSkills]);
+
+  const createCategory = async (event) => {
+    event.preventDefault();
+    const slug = newCategory.slug.trim().toLowerCase().replace(/\s+/g, "_");
+    setCategoryError("");
+    setCategorySlugError("");
+    try {
+      await fetchApiAuth("/api/admin/skill-categories", { method: "POST", body: JSON.stringify({ name: newCategory.name.trim(), slug, icon: "bx-star" }) });
+      notify("Category created successfully.");
+      setNewCategory({ name: "", slug: "" });
+      setCategoryModalOpen(false);
+      await loadSkills();
+    } catch (err) {
+      setCategoryError(err.message || "Failed to create category");
+      setCategorySlugError(err.errors?.slug || "");
+    }
+  };
+
+  const deleteCategory = async (category) => {
+    if (!(await confirm(`Delete the ${category.name} category?`))) return;
+    try {
+      await fetchApiAuth(`/api/admin/skill-categories/${category.id}`, { method: "DELETE" });
+      notify("Category deleted successfully.");
+      await loadSkills();
+    } catch (err) { setError(err.message || "Failed to delete category"); }
+  };
+
+  const updateCategory = async (category) => {
+    try {
+      await fetchApiAuth(`/api/admin/skill-categories/${category.id}`, { method: "PUT", body: JSON.stringify({ name: category.name.trim(), slug: category.slug.trim(), icon: category.icon?.trim() || "bx-star" }) });
+      notify("Category updated successfully.");
+      await loadSkills();
+    } catch (err) { setError(err.message || "Failed to update category"); }
+  };
 
   const filteredSkills = useMemo(() => {
     if (categoryFilter === "all") {
@@ -431,7 +512,7 @@ function AdminSkills() {
                 </FormField>
                 <FormField required>
                   Category
-                  <SearchableSelect required invalid={Boolean(validationErrors.category)} ariaLabel="Skill category" value={form.category} onChange={(value) => { setForm((current) => ({ ...current, category: value })); setValidationErrors((current) => ({ ...current, category: undefined })); }} options={skillCategories.map((category) => ({ value: category, label: skillCategoryLabels[category] }))} />
+                  <SearchableSelect required invalid={Boolean(validationErrors.category)} ariaLabel="Skill category" value={form.category} onChange={(value) => { setForm((current) => ({ ...current, category: value })); setValidationErrors((current) => ({ ...current, category: undefined })); }} options={categoryOptions} />
                   {validationErrors.category && (
                     <span className="admin-field-error">
                       {validationErrors.category}
@@ -540,12 +621,34 @@ function AdminSkills() {
         </div>
       )}
 
+      {categoryModalOpen && (
+        <Modal title="Create skill category" onClose={() => { setCategoryError(""); setCategorySlugError(""); setCategoryModalOpen(false); }}>
+          <form className="admin-form" onSubmit={createCategory}>
+            {categoryError && <div className="form-error" role="alert"><Icon name="warning" /><p>{categoryError}</p></div>}
+            <FormField required>Category name<input value={newCategory.name} onChange={(event) => setNewCategory((current) => ({ ...current, name: event.target.value }))} placeholder="e.g. Testing" required /></FormField>
+            <FormField required>Slug<input value={newCategory.slug} aria-invalid={Boolean(categorySlugError)} onChange={(event) => { setCategorySlugError(""); setNewCategory((current) => ({ ...current, slug: event.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "_") })); }} placeholder="testing" pattern="[a-z0-9_]+" required />{categorySlugError && <span className="admin-field-error">{categorySlugError}</span>}</FormField>
+            <div className="cms-modal-actions"><button type="button" className="secondary-button" onClick={() => setCategoryModalOpen(false)}>Cancel</button><button type="submit" className="primary-button">Create category</button></div>
+          </form>
+        </Modal>
+      )}
+
+      {manageCategoriesOpen && (
+        <Modal title="Manage skill categories" onClose={() => { setEditingCategoryId(null); setManageCategoriesOpen(false); }}>
+          {editingCategoryId ? (() => {
+            const category = categories.find((item) => item.id === editingCategoryId);
+            if (!category) return null;
+            return <div className="admin-form"><FormField required>Name<input value={category.name} onChange={(event) => setCategories((items) => items.map((item) => item.id === category.id ? { ...item, name: event.target.value } : item))} /></FormField><FormField required>Slug<input value={category.slug} onChange={(event) => setCategories((items) => items.map((item) => item.id === category.id ? { ...item, slug: event.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "_") } : item))} /></FormField><FormField>Icon class<input value={category.icon || "bx-star"} onChange={(event) => setCategories((items) => items.map((item) => item.id === category.id ? { ...item, icon: event.target.value } : item))} placeholder="bx-star" /></FormField><div className="cms-modal-actions"><button type="button" className="secondary-button" onClick={() => setEditingCategoryId(null)}>Back</button><button type="button" className="primary-button" onClick={async () => { await updateCategory(category); setEditingCategoryId(null); }}>Save changes</button></div></div>;
+          })() : <div className="category-manager-list">{categories.map((category, index) => <div className="category-manager-row" key={category.id}><div className="category-manager-info"><strong>{category.name}</strong><small>{category.slug} · {category.icon || "bx-star"}</small></div><button type="button" className="secondary-button" data-category-index={index} onFocus={() => setFocusedCategoryIndex(index)} onClick={() => setEditingCategoryId(category.id)}>Edit</button><button type="button" className="secondary-button danger-button" onClick={() => deleteCategory(category)}>Delete</button></div>)}</div>}
+        </Modal>
+      )}
+
       {routeMode === "list" && (
         <div className="admin-list-section">
+          <div className="admin-filter-row"><button type="button" className="secondary-button" onClick={() => setCategoryModalOpen(true)}>Create category</button><button type="button" className="secondary-button" onClick={() => setManageCategoriesOpen(true)}>Manage categories</button></div>
           <div className="admin-filter-row">
             <FormField>
               Category
-              <SearchableSelect ariaLabel="Filter by category" value={categoryFilter} onChange={setCategoryFilter} options={[{ value: 'all', label: 'All categories' }, ...orderedCategories.map((category) => ({ value: category, label: category }))]} />
+              <SearchableSelect ariaLabel="Filter by category" value={categoryFilter} onChange={setCategoryFilter} options={[{ value: 'all', label: 'All categories' }, ...categoryOptions]} />
             </FormField>
           </div>
           <DataTable

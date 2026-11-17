@@ -51,7 +51,7 @@ function Hero() {
         <motion.div className="availability" variants={fadeUp}>
           <span /> Available for freelance projects &amp; full-time roles
         </motion.div>
-        <motion.p className="hero-kicker" variants={fadeUp}>{profileData.title} · Pune, India</motion.p>
+        <motion.p className="hero-kicker" variants={fadeUp}>{profileData.name} · {profileData.title} · Pune, India</motion.p>
         <h1 id="hero-title">I build digital products<br />that <em>work beautifully.</em></h1>
         <motion.h2 variants={fadeUp}>
           <span className="multiple-text">{typedText}</span>
